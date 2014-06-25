@@ -1,0 +1,21 @@
+// The vertex program source code.
+  private String[] vsSource = {
+      "uniform mat4 modelMatrix;",
+      "uniform mat4 viewMatrix;",
+      "uniform mat4 projectionMatrix;",
+
+      "attribute vec3 vertex;",
+      "attribute vec3 color;",
+      "varying vec3 fcolor;",
+
+      "void main() {",
+      "  fcolor = color;",
+      "  gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertex, 1);",
+      "}" };
+
+  // The fragment program source code.
+  private String[] fsSource = { 
+      "varying vec3 fcolor;",
+      "void main() {", 
+      "  gl_FragColor = vec4(fcolor, 1.0);", 
+      "}" };
