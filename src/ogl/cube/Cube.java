@@ -19,6 +19,8 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 
 import java.nio.FloatBuffer;
 
+import ogl.app.App;
+import ogl.app.Input;
 import ogl.app.MatrixUniform;
 import ogl.app.OpenGLApp;
 import ogl.app.Util;
@@ -28,16 +30,16 @@ import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 import icg.warmup.Node;
 
-public class Cube extends Node {
+public class Cube extends Node implements App {
 
-	public Cube(String name) {
-		super(name);
-		// TODO Auto-generated constructor stub
+	public Cube() {
+		super("test");
 	}
 	public void init() {
 	    // Set background color to black.
@@ -119,7 +121,21 @@ public class Cube extends Node {
 	    // Draw the triangles that form the cube from the vertex data arrays.
 	    glDrawArrays(GL11.GL_QUADS, 0, vertices.length);
 	  }
-	
+	public static int getVertexAttribIdx() {
+		return vertexAttribIdx;
+	}
+
+	public static void setVertexAttribIdx(int vertexAttribIdx) {
+		RotatingCube.vertexAttribIdx = vertexAttribIdx;
+	}
+
+	public static int getColorAttribIdx() {
+		return colorAttribIdx;
+	}
+
+	public static void setColorAttribIdx(int colorAttribIdx) {
+		RotatingCube.colorAttribIdx = colorAttribIdx;
+	}
 
 	  // The shader program.
 	  private int program;
@@ -170,17 +186,12 @@ public class Cube extends Node {
 	      color = c;
 	    }
 	  }
-	  
-	  static public void main(String[] args) {
-		    new OpenGLApp("Rotating Cube - OpenGL ES 2.0 (lwjgl)", new RotatingCube())
-		      .start();
-		  }
-
+	 
 	  // Make construction of vertices easy on the eyes.
 	  private Vertex v(Vector p, Color c) {
 	    return new Vertex(p, c);
 	  }
-
+	  
 	  // Make construction of vectors easy on the eyes.
 	  private Vector vec(float x, float y, float z) {
 	    return vecmath.vector(x, y, z);
@@ -258,7 +269,17 @@ public class Cube extends Node {
 	  private FloatBuffer colorData;
 
 	  // Initialize the rotation angle of the cube.
-	  private float angle = 0;
-	
+	  private float angle = 30;
+	  @Override
+	  public void simulate(float elapsed, Input input) {
+	    // Pressing key 'r' toggles the cube animation.
+	    if (input.isKeyToggled(Keyboard.KEY_R))
+	      // Increase the angle with a speed of 90 degrees per second.
+	      angle += 90 * elapsed;
+	  }
+	  static public void main(String[] args) {
+		    new OpenGLApp("Rotating Cube - OpenGL ES 2.0 (lwjgl)", new Cube())
+		      .start();
+		  }
 	
 }

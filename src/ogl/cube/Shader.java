@@ -17,7 +17,8 @@ import java.util.Vector;
 import org.lwjgl.opengl.GL20;
 
 public class Shader {
-
+	private String vsSource;
+	private String fsSource;
 	public Shader(String file) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(getClass()
 				.getResourceAsStream(file)));
@@ -26,6 +27,7 @@ public class Shader {
 		Vector<String> v = new Vector<String>();
 		while ((line = br.readLine()) != null) {
 			output += line + "\n";
+			System.out.println(output);
 			v.add(line);
 		}
 		v.toArray();

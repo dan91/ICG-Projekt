@@ -2,7 +2,7 @@
  * Copyright (c) 2013 Henrik Tramberend, Marc Latoschik.
  * All rights reserved.
  *******************************************************************************/
-package ogl.cube;
+package ogl.pyramide;
 
 import static ogl.vecmathimp.FactoryDefault.vecmath;
 import static org.lwjgl.opengl.GL11.glClear;
@@ -40,10 +40,10 @@ import org.lwjgl.opengl.GL20;
 //Select the factory we want to use.
 
 // A simple but complete OpenGL 2.0 ES application.
-public class RotatingCube implements App {
+public class Pyramide implements App {
 
   static public void main(String[] args) {
-    new OpenGLApp("Rotating Cube - OpenGL ES 2.0 (lwjgl)", new RotatingCube())
+    new OpenGLApp("Rotating Cube - OpenGL ES 2.0 (lwjgl)", new Pyramide())
       .start();
   }
 
@@ -195,7 +195,7 @@ public void setProjectionMatrixUniform(MatrixUniform projectionMatrixUniform) {
 }
 
 public static void setVertexAttribIdx(int vertexAttribIdx) {
-	RotatingCube.vertexAttribIdx = vertexAttribIdx;
+	Pyramide.vertexAttribIdx = vertexAttribIdx;
 }
 
 public static int getColorAttribIdx() {
@@ -203,7 +203,7 @@ public static int getColorAttribIdx() {
 }
 
 public static void setColorAttribIdx(int colorAttribIdx) {
-	RotatingCube.colorAttribIdx = colorAttribIdx;
+	Pyramide.colorAttribIdx = colorAttribIdx;
 }
 
 // The shader program.
@@ -270,58 +270,45 @@ public static void setColorAttribIdx(int colorAttribIdx) {
   private Color col(float r, float g, float b) {
     return vecmath.color(r, g, b);
   }
-  // The colors of the cube vertices.
-  private Color[] c = { 
-      col(0, 0, 0), 
-      col(1, 0, 0), 
-      col(1, 1, 0), 
-      col(0, 1, 0),
-      col(1, 0, 1), 
-      col(0, 0, 1), 
-      col(0, 1, 1), 
-      col(1, 1, 1) 
-  };
+
   //
-  //     6 ------- 7 
-  //   / |       / | 
-  //  3 ------- 2  | 
+  //     
+  //   
+  //        2   | 
   //  |  |      |  | 
-  //  |  5 -----|- 4 
+  //  |     3 
   //  | /       | / 
   //  0 ------- 1
   //
   
   // The positions of the cube vertices.
   private Vector[] p = { 
-      vec(-w2, -h2, -d2), 
-      vec(w2, -h2, -d2),
-      vec(w2, h2, -d2), 
-      vec(-w2, h2, -d2), 
-      vec(w2, -h2, d2), 
-      vec(-w2, -h2, d2),
-      vec(-w2, h2, d2), 
-      vec(w2, h2, d2) 
+      vec(-w2, -h2, d2), // 0
+      vec(w2, -h2, d2), // 1
+      vec(0, h2, 0), //2
+      vec(0, -h2, -d2), //3
   };
 
-
-
+  // The colors of the cube vertices.
+  private Color[] c = { 
+      col(0, 0, 0), 
+      col(1, 0, 0), 
+      col(1, 1, 0), 
+      col(0, 1, 0),
+  };
 
 
   // Vertices combine position and color information. Every four vertices define
   // one side of the cube.
   private Vertex[] vertices = {
       // front
-      v(p[0], c[0]), v(p[1], c[1]), v(p[2], c[2]), v(p[3], c[3]),
-      // back
-      v(p[4], c[4]), v(p[5], c[5]), v(p[6], c[6]), v(p[7], c[7]),
+      v(p[0], c[0]), v(p[1], c[1]), v(p[2], c[2]),
       // right
-      v(p[1], c[1]), v(p[4], c[4]), v(p[7], c[7]), v(p[2], c[2]),
-      // top
-      v(p[3], c[3]), v(p[2], c[2]), v(p[7], c[7]), v(p[6], c[6]),
+      v(p[3], c[3]), v(p[1], c[1]), v(p[2], c[2]),
       // left
-      v(p[5], c[5]), v(p[0], c[0]), v(p[3], c[3]), v(p[6], c[6]),
+      v(p[3], c[3]), v(p[0], c[0]), v(p[2], c[2]),
       // bottom
-      v(p[5], c[5]), v(p[4], c[4]), v(p[1], c[1]), v(p[0], c[0]) 
+      v(p[0], c[0]), v(p[1], c[1]), v(p[3], c[3]) 
   };
 
   private FloatBuffer positionData;
