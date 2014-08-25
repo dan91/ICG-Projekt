@@ -11,7 +11,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import ogl.app.MatrixUniform;
 import ogl.app.Util;
+import ogl.vecmath.Matrix;
+
 import java.util.Vector;
 
 import org.lwjgl.opengl.GL20;
@@ -19,6 +22,14 @@ import org.lwjgl.opengl.GL20;
 public class Shader {
 	private String vsSource;
 	private String fsSource;
+	
+	private MatrixUniform modelMatrixUniform;
+	private MatrixUniform viewMatrixUniform;
+	private MatrixUniform projectionMatrixUniform;
+
+	// The attribute indices for the vertex data.
+	public static int vertexAttribIdx = 0;
+	public static int colorAttribIdx = 1;
 	public Shader(String file) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(getClass()
 				.getResourceAsStream(file)));
@@ -56,5 +67,14 @@ public class Shader {
 		program = glCreateProgram();
 		glAttachShader(program, vs);
 		glAttachShader(program, fs);
+	}
+	public void setModelMatrixUniform(Matrix modelMatrixUniform) {
+		this.modelMatrixUniform.set(modelMatrixUniform);
+	}
+	public void setViewMatrixUniform(Matrix viewMatrixUniform) {
+		this.viewMatrixUniform.set(viewMatrixUniform);
+	}
+	public void setProjectionMatrixUniform(Matrix projectionMatrixUniform) {
+		this.projectionMatrixUniform.set(projectionMatrixUniform);
 	}
 }

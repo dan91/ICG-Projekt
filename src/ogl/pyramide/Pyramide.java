@@ -103,7 +103,7 @@ public class Pyramide implements App {
     }
     positionData.rewind();
     colorData.rewind();
-  }
+    }
 
   public MatrixUniform getModelMatrixUniform() {
 	return modelMatrixUniform;
@@ -276,7 +276,7 @@ public static void setColorAttribIdx(int colorAttribIdx) {
   //   
   //        2   | 
   //  |  |      |  | 
-  //  |     3 
+  //  |  3   	   4
   //  | /       | / 
   //  0 ------- 1
   //
@@ -286,15 +286,17 @@ public static void setColorAttribIdx(int colorAttribIdx) {
       vec(-w2, -h2, d2), // 0
       vec(w2, -h2, d2), // 1
       vec(0, h2, 0), //2
-      vec(0, -h2, -d2), //3
+      vec(-w2, -h2, -d2), //3
+      vec(w2, -h2, -d2), //4
   };
 
   // The colors of the cube vertices.
   private Color[] c = { 
-      col(0, 0, 0), 
-      col(1, 0, 0), 
-      col(1, 1, 0), 
-      col(0, 1, 0),
+      col(1, 1, 1), 
+      col(1, 1, 1), 
+      col(1, 1, 1), 
+      col(1, 1, 1), 
+      col(1, 1, 1)
   };
 
 
@@ -304,11 +306,13 @@ public static void setColorAttribIdx(int colorAttribIdx) {
       // front
       v(p[0], c[0]), v(p[1], c[1]), v(p[2], c[2]),
       // right
-      v(p[3], c[3]), v(p[1], c[1]), v(p[2], c[2]),
+      v(p[1], c[1]), v(p[4], c[4]), v(p[2], c[2]),
+      // back
+      v(p[4], c[4]), v(p[2], c[2]), v(p[3], c[3]),
       // left
       v(p[3], c[3]), v(p[0], c[0]), v(p[2], c[2]),
       // bottom
-      v(p[0], c[0]), v(p[1], c[1]), v(p[3], c[3]) 
+      v(p[3], c[3]), v(p[4], c[4]), v(p[1], c[1]), v(p[0], c[0]) 
   };
 
   private FloatBuffer positionData;
