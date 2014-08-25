@@ -12,25 +12,28 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import ogl.app.Util;
+import java.util.Vector;
 
 import org.lwjgl.opengl.GL20;
 
 public class Shader {
 
-	public Shader() throws IOException {
+	public Shader(String file) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(getClass()
-				.getResourceAsStream("Shader.txt")));
+				.getResourceAsStream(file)));
 		String line;
 		String output = "";
+		Vector<String> v = new Vector<String>();
 		while ((line = br.readLine()) != null) {
 			output += line + "\n";
+			v.add(line);
 		}
-		System.out.println(output);
-		br.close();
+		v.toArray();
 	}
 
 	public static void main(String args[]) throws IOException {
-		Shader s = new Shader();
+		Shader fs = new Shader("fs.txt");
+		Shader vs = new Shader("vs.txt");
 	}
 
 	public void init() {

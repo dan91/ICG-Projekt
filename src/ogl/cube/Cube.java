@@ -238,7 +238,7 @@ public class Cube extends Node {
 	  };
 
 	  // Vertices combine position and color information. Every four vertices define
-	  // one side of the cube.
+	  // one side of the cube.	
 	  private Vertex[] vertices = {
 	      // front
 	      v(p[0], c[0]), v(p[1], c[1]), v(p[2], c[2]), v(p[3], c[3]),
