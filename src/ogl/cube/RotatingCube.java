@@ -28,6 +28,7 @@ import ogl.app.Input;
 import ogl.app.MatrixUniform;
 import ogl.app.OpenGLApp;
 import ogl.app.Util;
+import ogl.scenegraph.Vertex;
 import ogl.vecmath.Color;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
@@ -246,15 +247,15 @@ public static void setColorAttribIdx(int colorAttribIdx) {
       "}" };
 
   // Auxillary class to represent a single vertex.
-  public class Vertex {
-    Vector position;
-    Color color;
-
-    Vertex(Vector p, Color c) {
-      position = p;
-      color = c;
-    }
-  }
+//  public class Vertex {
+//    Vector position;
+//    Color color;
+//
+//    Vertex(Vector p, Color c) {
+//      position = p;
+//      color = c;
+//    }
+//  }
 
   // Make construction of vertices easy on the eyes.
   private Vertex v(Vector p, Color c) {
@@ -279,7 +280,8 @@ public static void setColorAttribIdx(int colorAttribIdx) {
       col(1, 0, 1), 
       col(0, 0, 1), 
       col(0, 1, 1), 
-      col(1, 1, 1) 
+      col(1, 1, 1),
+      col(1, 23, 1) 
   };
   //
   //     6 ------- 7 
@@ -300,7 +302,8 @@ public static void setColorAttribIdx(int colorAttribIdx) {
       vec(w2, -h2, d2), 
       vec(-w2, -h2, d2),
       vec(-w2, h2, d2), 
-      vec(w2, h2, d2) 
+      vec(w2, h2, d2),
+      vec(0, 2*h2, 0)
   };
 
 
@@ -309,7 +312,7 @@ public static void setColorAttribIdx(int colorAttribIdx) {
 
   // Vertices combine position and color information. Every four vertices define
   // one side of the cube.
-  private Vertex[] vertices = {
+  public Vertex[] vertices = {
       // front
       v(p[0], c[0]), v(p[1], c[1]), v(p[2], c[2]), v(p[3], c[3]),
       // back
@@ -321,7 +324,11 @@ public static void setColorAttribIdx(int colorAttribIdx) {
       // left
       v(p[5], c[5]), v(p[0], c[0]), v(p[3], c[3]), v(p[6], c[6]),
       // bottom
-      v(p[5], c[5]), v(p[4], c[4]), v(p[1], c[1]), v(p[0], c[0]) 
+      v(p[5], c[5]), v(p[4], c[4]), v(p[1], c[1]), v(p[0], c[0]),
+      // roof front
+      v(p[6], c[3]), v(p[3], c[1]), v(p[8], c[1]), v(p[6], c[1]),
+      // roof right
+      v(p[2], c[3]), v(p[7], c[1]), v(p[8], c[1]), v(p[2], c[1]),
   };
 
   private FloatBuffer positionData;

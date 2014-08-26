@@ -21,6 +21,7 @@ import static org.lwjgl.opengl.GL20.glShaderSource;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 
+import java.io.IOException;
 import java.nio.FloatBuffer;
 
 import ogl.app.App;
@@ -28,6 +29,8 @@ import ogl.app.Input;
 import ogl.app.MatrixUniform;
 import ogl.app.OpenGLApp;
 import ogl.app.Util;
+import ogl.cube.Shader;
+import ogl.scenegraph.Vertex;
 import ogl.vecmath.Color;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
@@ -40,70 +43,21 @@ import org.lwjgl.opengl.GL20;
 //Select the factory we want to use.
 
 // A simple but complete OpenGL 2.0 ES application.
-public class Pyramide implements App {
 
-  static public void main(String[] args) {
+public class Pyramide implements App {
+	public Shader vs;
+	public Shader fs;
+
+	public Pyramide () throws IOException {
+		  this.vs = new Shader();
+		  this.fs = new Shader();
+	}
+  static public void main(String[] args) throws IOException {
     new OpenGLApp("Rotating Cube - OpenGL ES 2.0 (lwjgl)", new Pyramide())
       .start();
   }
 
-  @Override
-  public void init() {
-    // Set background color to black.
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-    // Enable depth testing.
-    glEnable(GL11.GL_DEPTH_TEST);
-
-    // Create and compile the vertex shader.
-    int vs = glCreateShader(GL20.GL_VERTEX_SHADER);
-    glShaderSource(vs, vsSource);
-    glCompileShader(vs);
-    Util.checkCompilation(vs);
-
-    // Create and compile the fragment shader.
-    int fs = glCreateShader(GL20.GL_FRAGMENT_SHADER);
-    glShaderSource(fs, fsSource);
-    glCompileShader(fs);
-    Util.checkCompilation(fs);
-
-    // Create the shader program and link vertex and fragment shader
-    // together.
-    program = glCreateProgram();
-    glAttachShader(program, vs);
-    glAttachShader(program, fs);
-
-    // Bind the vertex attribute data locations for this shader program. The
-    // shader expects to get vertex and color data from the mesh. This needs to
-    // be done *before* linking the program.
-    glBindAttribLocation(program, vertexAttribIdx, "vertex");
-    glBindAttribLocation(program, colorAttribIdx, "color");
-
-    // Link the shader program.
-    glLinkProgram(program);
-    Util.checkLinkage(program);
-
-    // Bind the matrix uniforms to locations on this shader program. This needs
-    // to be done *after* linking the program.
-    modelMatrixUniform = new MatrixUniform(program, "modelMatrix");
-    viewMatrixUniform = new MatrixUniform(program, "viewMatrix");
-    projectionMatrixUniform = new MatrixUniform(program, "projectionMatrix");
-
-    // Prepare the vertex data arrays.
-    // Compile vertex data into a Java Buffer data structures that can be
-    // passed to the OpenGL API efficently.
-    positionData = BufferUtils.createFloatBuffer(vertices.length
-        * vecmath.vectorSize());
-    colorData = BufferUtils.createFloatBuffer(vertices.length
-        * vecmath.colorSize());
-
-    for (Vertex v : vertices) {
-      positionData.put(v.position.asArray());
-      colorData.put(v.color.asArray());
-    }
-    positionData.rewind();
-    colorData.rewind();
-    }
+ 
 
   public MatrixUniform getModelMatrixUniform() {
 	return modelMatrixUniform;
@@ -149,45 +103,7 @@ public void setProjectionMatrixUniform(MatrixUniform projectionMatrixUniform) {
    */
   @Override
   public void display(int width, int height) {
-    // Adjust the the viewport to the actual window size. This makes the
-    // rendered image fill the entire window.
-    glViewport(0, 0, width, height);
-
-    // Clear all buffers.
-    glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-
-    // Assemble the transformation matrix that will be applied to all
-    // vertices in the vertex shader.
-    float aspect = (float) width / (float) height;
-
-    // The perspective projection. Camera space to NDC.
-    Matrix projectionMatrix = vecmath
-      .perspectiveMatrix(60f, aspect, 0.1f, 100f);
-
-    // The inverse camera transformation. World space to camera space.
-    Matrix viewMatrix = vecmath.lookatMatrix(vecmath.vector(0f, 0f, 3f),
-      vecmath.vector(0f, 0f, 0f), vecmath.vector(0f, 1f, 0f));
-
-    // The modeling transformation. Object space to world space.
-    Matrix modelMatrix = vecmath.rotationMatrix(vecmath.vector(1, 1, 1), angle);
-
-    // Activate the shader program and set the transformation matricies to the
-    // uniform variables.
-    glUseProgram(program);
-
-    modelMatrixUniform.set(modelMatrix);
-    viewMatrixUniform.set(viewMatrix);
-    projectionMatrixUniform.set(projectionMatrix);
-
-    // Enable the vertex data arrays (with indices 0 and 1). We use a vertex
-    // position and a vertex color.
-    glVertexAttribPointer(vertexAttribIdx, 3, false, 0, positionData);
-    glEnableVertexAttribArray(vertexAttribIdx);
-    glVertexAttribPointer(colorAttribIdx, 3, false, 0, colorData);
-    glEnableVertexAttribArray(colorAttribIdx);
-
-    // Draw the triangles that form the cube from the vertex data arrays.
-    glDrawArrays(GL11.GL_QUADS, 0, vertices.length);
+    
   }
 
   public static int getVertexAttribIdx() {
@@ -223,38 +139,8 @@ public static void setColorAttribIdx(int colorAttribIdx) {
   float h2 = 0.5f;
   float d2 = 0.5f;
 
-  // The vertex program source code.
-  private String[] vsSource = {
-      "uniform mat4 modelMatrix;",
-      "uniform mat4 viewMatrix;",
-      "uniform mat4 projectionMatrix;",
 
-      "attribute vec3 vertex;",
-      "attribute vec3 color;",
-      "varying vec3 fcolor;",
-
-      "void main() {",
-      "  fcolor = color;",
-      "  gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertex, 1);",
-      "}" };
-
-  // The fragment program source code.
-  private String[] fsSource = { 
-      "varying vec3 fcolor;",
-      "void main() {", 
-      "  gl_FragColor = vec4(fcolor, 1.0);", 
-      "}" };
-
-  // Auxillary class to represent a single vertex.
-  public class Vertex {
-    Vector position;
-    Color color;
-
-    Vertex(Vector p, Color c) {
-      position = p;
-      color = c;
-    }
-  }
+ 
 
   // Make construction of vertices easy on the eyes.
   private Vertex v(Vector p, Color c) {
@@ -262,7 +148,7 @@ public static void setColorAttribIdx(int colorAttribIdx) {
   }
 
   // Make construction of vectors easy on the eyes.
-  private Vector vec(float x, float y, float z) {
+private Vector vec(float x, float y, float z) {
     return vecmath.vector(x, y, z);
   }
 
@@ -304,15 +190,17 @@ public static void setColorAttribIdx(int colorAttribIdx) {
   // one side of the cube.
   private Vertex[] vertices = {
       // front
-      v(p[0], c[0]), v(p[1], c[1]), v(p[2], c[2]),
+      v(p[0], c[0]), v(p[2], c[1]), v(p[1], c[2]),
       // right
       v(p[1], c[1]), v(p[4], c[4]), v(p[2], c[2]),
       // back
-      v(p[4], c[4]), v(p[2], c[2]), v(p[3], c[3]),
+      v(p[4], c[4]), v(p[3], c[2]), v(p[2], c[3]),
       // left
       v(p[3], c[3]), v(p[0], c[0]), v(p[2], c[2]),
-      // bottom
-      v(p[3], c[3]), v(p[4], c[4]), v(p[1], c[1]), v(p[0], c[0]) 
+      // bottom right
+      v(p[3], c[3]), v(p[4], c[0]), v(p[1], c[2]),
+      // bottom left
+      v(p[1], c[3]), v(p[0], c[4]), v(p[3], c[1]),
   };
 
   private FloatBuffer positionData;
@@ -320,4 +208,16 @@ public static void setColorAttribIdx(int colorAttribIdx) {
 
   // Initialize the rotation angle of the cube.
   private float angle = 0;
+
+
+
+
+@Override
+public void init() {
+	vs.init(vertices);
+}
+
+
+
+
 }
