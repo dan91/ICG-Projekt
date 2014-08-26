@@ -3,7 +3,7 @@ package icg.warmup;
 import java.util.ArrayList;
 import java.util.List;
 
-import ogl.vecmath.*;
+import ogl.vecmath.Matrix;
 
 public class Node {
 	private Matrix transformation;

@@ -17,6 +17,9 @@ import static org.lwjgl.opengl.GL20.glShaderSource;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 
+import org.apache.commons.*;
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
@@ -30,6 +33,7 @@ import ogl.app.Input;
 import ogl.app.MatrixUniform;
 import ogl.app.OpenGLApp;
 import ogl.app.Util;
+import ogl.cube.Cube;
 import ogl.cube.RotatingCube;
 import ogl.cube.Shader;
 import ogl.scenegraph.Vertex;
@@ -43,10 +47,9 @@ public class PyramideApp implements App {
 	private FloatBuffer positionData;
 	private FloatBuffer colorData;
 	
-	private FloatBuffer positionData2;
-	private FloatBuffer colorData2;
+	
 	private Vertex[] vertices;
-	private Vertex[] vertices2;
+	
 	public int program;
 	
 	private float angle = 0;
@@ -61,11 +64,11 @@ public class PyramideApp implements App {
 		}
 		//RotatingCube cube = new RotatingCube();
 		Triangle tri = new Triangle();
-		RotatingCube cube = new RotatingCube();
-//		
-		this.vertices = tri.vertices;
+		Cube cube = new Cube();
+		
+		this.vertices = ArrayUtils.addAll(tri.vertices, cube.vertices);
 		for(Vertex v : vertices) {
-			System.out.println(v.color.toString());
+			
 		}
 		// Set background color to black.
 	    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -120,24 +123,14 @@ public class PyramideApp implements App {
 			positionData.put(ver.position.asArray());
 			colorData.put(ver.color.asArray());
 		}
+		int ind = 0;
+	    while(ind < 17) {
+	    	//Vector new =  new Vector(vertices[ind].position.x()*2;
+	    	ind++;
+		}
 		positionData.rewind();
 		colorData.rewind();
 		
-
-	    // Prepare the vertex data arrays.
-		// Compile vertex data into a Java Buffer data structures that can be
-		// passed to the OpenGL API efficently.
-		positionData2 = BufferUtils.createFloatBuffer(vertices2.length
-				* vecmath.vectorSize());
-		colorData2 = BufferUtils.createFloatBuffer(vertices2.length
-				* vecmath.colorSize());
-
-		for (Vertex ver : vertices2) {
-			positionData2.put(ver.position.asArray());
-			colorData2.put(ver.color.asArray());
-		}
-		positionData2.rewind();
-		colorData2.rewind();
 	}
 
 	@Override
@@ -179,16 +172,20 @@ public class PyramideApp implements App {
 	    defaultshader.modelMatrixUniform.set(modelMatrix);
 	    defaultshader.viewMatrixUniform.set(viewMatrix);
 	    defaultshader.projectionMatrixUniform.set(projectionMatrix);
-
+	    
+	    
 	    // Enable the vertex data arrays (with indices 0 and 1). We use a vertex
 	    // position and a vertex color.
 	    glVertexAttribPointer(defaultshader.vertexAttribIdx, 3, false, 0, positionData);
 	    glEnableVertexAttribArray(defaultshader.vertexAttribIdx);
 	    glVertexAttribPointer(defaultshader.colorAttribIdx, 3, false, 0, colorData);
 	    glEnableVertexAttribArray(defaultshader.colorAttribIdx);
-
+	    
 	    // Draw the triangles that form the cube from the vertex data arrays.
-	    glDrawArrays(GL11.GL_TRIANGLES, 0, vertices.length);
+	    glDrawArrays(GL11.GL_TRIANGLES, 0, 18);
+	    glDrawArrays(GL11.GL_TRIANGLES, 18, 36);
+	    
+	 
 	    
 	    
 	}

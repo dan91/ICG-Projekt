@@ -5,21 +5,6 @@
 package ogl.pyramide;
 
 import static ogl.vecmathimp.FactoryDefault.vecmath;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glDrawArrays;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glViewport;
-import static org.lwjgl.opengl.GL20.glAttachShader;
-import static org.lwjgl.opengl.GL20.glBindAttribLocation;
-import static org.lwjgl.opengl.GL20.glCompileShader;
-import static org.lwjgl.opengl.GL20.glCreateProgram;
-import static org.lwjgl.opengl.GL20.glCreateShader;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glLinkProgram;
-import static org.lwjgl.opengl.GL20.glShaderSource;
-import static org.lwjgl.opengl.GL20.glUseProgram;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -28,17 +13,12 @@ import ogl.app.App;
 import ogl.app.Input;
 import ogl.app.MatrixUniform;
 import ogl.app.OpenGLApp;
-import ogl.app.Util;
 import ogl.cube.Shader;
 import ogl.scenegraph.Vertex;
 import ogl.vecmath.Color;
-import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
 
-import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
 
 //Select the factory we want to use.
 

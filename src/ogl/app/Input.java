@@ -4,6 +4,10 @@
  *******************************************************************************/
 package ogl.app;
 
+// Select the factory we want to use.
+// It is a bit ugly to do it at several points...though 
+import static ogl.vecmathimp.FactoryDefault.vecmath;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,10 +15,6 @@ import ogl.vecmath.Vector;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-
-// Select the factory we want to use.
-// It is a bit ugly to do it at several points...though 
-import static ogl.vecmathimp.FactoryDefault.vecmath;
 
 
 /**

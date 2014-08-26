@@ -14,4 +14,16 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>commons-lang3-3.3.2-src</name>
+			<type>2</type>
+			<location>/Volumes/Macintosh HD/Users/Daniel/Downloads/commons-lang3-3.3.2-src</location>
+		</link>
+		<link>
+			<name>java</name>
+			<type>2</type>
+			<location>/Volumes/Macintosh HD/Users/Daniel/Downloads/commons-lang3-3.3.2-src/src/main/java</location>
+		</link>
+	</linkedResources>
 </projectDescription>

@@ -1,6 +1,7 @@
 package icg.warmup.data;
 
 import java.util.Vector;
+
 import javax.vecmath.Point2d;
 
 public class Line {
