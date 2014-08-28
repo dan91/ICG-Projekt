@@ -46,10 +46,12 @@ public class MatrixUniform extends Uniform {
    *          The new matix value for the uniform variable.
    */
   public void set(Matrix m) {
-    buffer.rewind();
-    buffer.put(m.asArray());
-    buffer.rewind();
+	    buffer.rewind();
+	    buffer.put(m.asArray());
+	    buffer.rewind();
 
-    glUniformMatrix4(location, false, buffer);
-  }
+	    glUniformMatrix4(location, false, buffer);
+	  }
+
+  
 }

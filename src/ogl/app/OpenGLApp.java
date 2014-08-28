@@ -77,8 +77,8 @@ public final class OpenGLApp {
       while (!Display.isCloseRequested()) {
         input.update();
         input.setWindowSize(width, height);
-        application.simulate(time.elapsed(), input);
-        application.display(width, height);
+        //application.simulate(time.elapsed(), input);
+        application.display(width, height, input);
         Display.update();
       }
     } catch (LWJGLException e) {

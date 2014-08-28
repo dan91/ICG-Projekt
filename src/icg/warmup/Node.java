@@ -2,8 +2,9 @@ package icg.warmup;
 
 import java.util.ArrayList;
 import java.util.List;
+import static ogl.vecmathimp.FactoryDefault.vecmath;
 
-import ogl.vecmath.Matrix;
+import ogl.vecmath.*;
 
 public class Node {
 	private Matrix transformation;
@@ -12,6 +13,7 @@ public class Node {
 	private String name;
 
 	public Node(String name) {
+		setTransformation(vecmath.identityMatrix());		
 		this.nodes = new ArrayList<Node>();
 		this.name = name;
 	}
@@ -25,7 +27,7 @@ public class Node {
 	}
 
 	public Matrix getTransformation() {
-		return transformation;
+		return this.transformation;
 	}
 
 	public void setTransformation(Matrix transformation) {
