@@ -2,8 +2,10 @@ package ogl.scenegraph;
 
 import java.util.ArrayList;
 import java.util.List;
-import static ogl.vecmathimp.FactoryDefault.vecmath;
 
+import org.w3c.dom.css.Counter;
+
+import static ogl.vecmathimp.FactoryDefault.vecmath;
 import ogl.vecmath.*;
 
 public class Node {
@@ -13,7 +15,7 @@ public class Node {
 	private String name;
 
 	public Node(String name) {
-		setTransformation(vecmath.identityMatrix());		
+		setTransformation(vecmath.identityMatrix());
 		this.nodes = new ArrayList<Node>();
 		this.name = name;
 	}
@@ -32,6 +34,18 @@ public class Node {
 
 	public void setTransformation(Matrix transformation) {
 		this.transformation = transformation;
+	}
+
+	//TODO: Funktioniert leider noch nicht ganz. Funktionsaufruf beendet Schleife.
+	public void display(Matrix m) {
+		if (nodes.isEmpty()) {
+			this.display(m);
+		}
+		else{
+			for (int i = 0; i < nodes.size(); i++) {
+				nodes.get(i).display(m);
+			}	
+		}
 	}
 
 	@Override

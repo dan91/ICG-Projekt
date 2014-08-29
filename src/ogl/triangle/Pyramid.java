@@ -7,7 +7,6 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 
 import java.nio.FloatBuffer;
 
-import ogl.app.MatrixUniform;
 import ogl.cube.Shader;
 import ogl.scenegraph.Node;
 import ogl.scenegraph.Vertex;
@@ -20,17 +19,19 @@ import org.lwjgl.opengl.GL11;
 
 
 public class Pyramid extends Node {
-
 	
-	private Shader defaultshader;
+	private FloatBuffer positionData;
+	private FloatBuffer colorData;
+	
+	//Colors THIS object
+	Shader defaultshader;
 
-
-	public Pyramid (Shader defaultshader, String name) {
+	//Creates the vertex array with positions and colors
+	public Pyramid (Shader defaultshader ,String name) {
 		super(name);
+		
 		this.defaultshader = defaultshader;
-		// Prepare the vertex data arrays.
-		// Compile vertex data into a Java Buffer data structures that can be
-		// passed to the OpenGL API efficently.
+		
 		positionData = BufferUtils.createFloatBuffer(vertices.length
 				* vecmath.vectorSize());
 		colorData = BufferUtils.createFloatBuffer(vertices.length
@@ -42,20 +43,14 @@ public class Pyramid extends Node {
 		}
 		positionData.rewind();
 		colorData.rewind();
-		
 	}
 
-
-
-
-
-	public void display(Matrix m) { 
-
+	// Draws the pyramid using opengl
+	@Override
+	public void display(Matrix m) {
+		
 		defaultshader.setModelMatrixUniform(m.mult(getTransformation()));
-
-
-		// Enable the vertex data arrays (with indices 0 and 1). We use a vertex
-		// position and a vertex color.
+		
 		glVertexAttribPointer(vertexAttribIdx, 3, false, 0, positionData);
 		glEnableVertexAttribArray(vertexAttribIdx);
 		glVertexAttribPointer(colorAttribIdx, 3, false, 0, colorData);
@@ -65,29 +60,14 @@ public class Pyramid extends Node {
 		glDrawArrays(GL11.GL_TRIANGLES, 0, vertices.length);
 	}
 
-
-
 	// The attribute indices for the vertex data.
-	public static int vertexAttribIdx = 0;
-	public static int colorAttribIdx = 1;
+	private static int vertexAttribIdx = 0;
+	private static int colorAttribIdx = 1;
 
 	// Width, depth and height of the cube divided by 2.
-	float w2 = 0.5f;
-	float h2 = 0.5f;
-	float d2 = 0.5f;
-
-
-
-	// Auxillary class to represent a single vertex.
-	private class Vertex {
-		Vector position;
-		Color color;
-
-		Vertex(Vector p, Color c) {
-			position = p;
-			color = c;
-		}
-	}
+	private float w2 = 0.5f;
+	private float h2 = 0.5f;
+	private float d2 = 0.5f;
 
 	// Make construction of vertices easy on the eyes.
 	private Vertex v(Vector p, Color c) {
@@ -120,7 +100,7 @@ public class Pyramid extends Node {
 			vec(w2, -h2, -d2), 
 			vec(w2, -h2, d2), 
 			vec(-w2, -h2, d2),
-			vec(0, h2, 0)
+			vec(0, h2, 0),
 	};
 
 	// The colors of the triangle vertices.
@@ -132,7 +112,7 @@ public class Pyramid extends Node {
 			col(0, 0, 1), 
 			col(1, 0, 1), 
 			col(0, 0, 1), 
-			col(0, 4, 1) 
+			col(0, 4, 1), 
 	};
 
 	// Vertices combine position and color information. Every tree vertices define
@@ -145,18 +125,11 @@ public class Pyramid extends Node {
 			// back
 			v(t[2], c[2]), v(t[3], c[3]), v(t[4], c[4]),
 			// left
-			v(t[3], c[3]), v(t[0], c[0]), v(t[4], c[4]), 
+			v(t[3], c[3]), v(t[0], c[0]), v(t[4], c[4]),
 			// bottom
 			v(t[0], c[0]), v(t[2], c[2]), v(t[1], c[1]),
 			// bottom
 			v(t[0], c[0]), v(t[3], c[3]), v(t[2], c[2]),
 
 	};
-
-	private FloatBuffer positionData;
-	private FloatBuffer colorData;
-
-	// Initialize the rotation angle of the triangle.
-	//TODO nicht implementiert
-	private float angle = 0;
 }

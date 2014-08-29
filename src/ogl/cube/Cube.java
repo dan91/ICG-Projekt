@@ -11,7 +11,6 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import ogl.scenegraph.Node;
-import ogl.scenegraph.Object3D;
 import ogl.scenegraph.Vertex;
 import ogl.vecmath.Color;
 import ogl.vecmath.Matrix;
@@ -19,8 +18,10 @@ import ogl.vecmath.Vector;
 
 public class Cube extends Node {
 
-	
 	Shader defaultshader;
+	
+	private FloatBuffer positionData;
+	private FloatBuffer colorData;
 	
 	public Cube(Shader defaultshader, String name) {
 		super(name);
@@ -42,15 +43,11 @@ public class Cube extends Node {
 		colorData.rewind();
 		
 	}
-
-
-
-
-
+	
+	@Override
 	public void display(Matrix m) { 
 
 		defaultshader.setModelMatrixUniform(m.mult(getTransformation()));
-
 
 		// Enable the vertex data arrays (with indices 0 and 1). We use a vertex
 		// position and a vertex color.
@@ -62,9 +59,7 @@ public class Cube extends Node {
 		// Draw the triangles that form the cube from the vertex data arrays.
 		glDrawArrays(GL11.GL_TRIANGLES, 0, vertices.length);
 	}
-
-
-
+	
 	// The attribute indices for the vertex data.
 	public static int vertexAttribIdx = 0;
 	public static int colorAttribIdx = 1;
@@ -73,10 +68,6 @@ public class Cube extends Node {
 	float w2 = 0.5f;
 	float h2 = 0.5f;
 	float d2 = 0.5f;
-
-
-
-	
 
 	// Make construction of vertices easy on the eyes.
 	private Vertex v(Vector p, Color c) {
@@ -92,7 +83,6 @@ public class Cube extends Node {
 	private Color col(float r, float g, float b) {
 		return vecmath.color(r, g, b);
 	}
-
 
 	  // The colors of the cube vertices.
 	  private Color[] c = { 
@@ -167,22 +157,5 @@ public class Cube extends Node {
 		      v(p[5], c[5]), v(p[4], c[1]), v(p[1], c[0]),
 		      
 		  };
-
-		  //
-		  //     6 ------- 7 
-		  //   / |       / | 
-		  //  3 ------- 2  | 
-		  //  |  |      |  | 
-		  //  |  5 -----|- 4 
-		  //  | /       | / 
-		  //  0 ------- 1
-		  //
-		  
-	  private FloatBuffer positionData;
-	  private FloatBuffer colorData;
-
-	  // Initialize the rotation angle of the cube.
-	  private float angle = 30;
-	 
-	
+	  
 }

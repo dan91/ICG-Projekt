@@ -45,11 +45,12 @@ public class Start implements App {
 
 	public Cube cube1;
 	public Pyramid pyramid1;
+	public Node haus;
 
 	private Shader defaultshader;
 
 	// Initialize the rotation angle of the cube.
-	private float angle = 0;
+
 
 	@Override
 	public void init() {
@@ -65,31 +66,53 @@ public class Start implements App {
 		// Creates 3D-Objects
 		pyramid1 = new Pyramid(defaultshader, "Pyramide");
 
-		cube1 = new Cube(defaultshader, "Würfel");
+		cube1 = new Cube(defaultshader, "Wuerfel");
+		
+		haus = new Node("Haus");
+		
+		haus.addNode(cube1);
+		haus.addNode(pyramid1);
+		System.out.println(haus.toString());
+		
 
 	}
 
-	Vector axis = vecmath.vector(0, 1, 0);
+
 
 	// TODO: in Object3D auslagern
 	public void simulate(float elapsed, Input input) {
-		while (input.isKeyToggled(Keyboard.KEY_X)) {
+		if (input.isKeyToggled(Keyboard.KEY_X)) {
 			angle += 90 * elapsed;
 			axis = vecmath.vector(1, 0, 0);
-			break;
 		}
-		while (input.isKeyToggled(Keyboard.KEY_Y)) {
+		if (input.isKeyToggled(Keyboard.KEY_Y)) {
 			axis = vecmath.vector(0, 1, 0);
 			angle += 90 * elapsed;
-			break;
 		}
-		while (input.isKeyToggled(Keyboard.KEY_Z)) {
+		if (input.isKeyToggled(Keyboard.KEY_Z)) {
 			axis = vecmath.vector(0, 0, 1);
 			angle += 90 * elapsed;
-			break;
 		}
-	}
+		if (input.isKeyDown(Keyboard.KEY_UP)) {
+			move = move.add(vecmath.vector(0, 0.03f, 0));
+		}
+		if (input.isKeyDown(Keyboard.KEY_DOWN)) {
+			move = move.add(vecmath.vector(0, -0.03f, 0));
+		}
+		if (input.isKeyDown(Keyboard.KEY_LEFT)) {
+			move = move.add(vecmath.vector(-0.03f, 0f, 0f));
+		}
+		if (input.isKeyDown(Keyboard.KEY_RIGHT)) {
+			move = move.add(vecmath.vector(0.03f, 0f, 0f));
+		}
 
+	}
+	
+	int cubeangle = 90;
+	Vector axis = vecmath.vector(0, 1, 0);
+	private float angle = 0;
+	Vector move = vecmath.vector(0, 0, 0);
+			
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -109,29 +132,29 @@ public class Start implements App {
 		float aspect = (float) width / (float) height;
 
 		// The perspective projection. Camera space to NDC.
-		Matrix projectionMatrix = vecmath.perspectiveMatrix(60f, aspect, 0.1f,
-				100f);
+		Matrix projectionMatrix = vecmath.perspectiveMatrix(60f, aspect, 0.1f, 100f);
 
 		// The inverse camera transformation. World space to camera space.
-		Matrix viewMatrix = vecmath.lookatMatrix(vecmath.vector(0f, 0f, 3f),
-				vecmath.vector(0f, 0f, 0f), vecmath.vector(0f, 1f, 0f));
+		Matrix viewMatrix = vecmath.lookatMatrix(vecmath.vector(0f, 0f, 3f), vecmath.vector(0f, 0f, 0f),
+				vecmath.vector(0f, 1f, 0f));
 
 		// The modeling transformation. Object space to world space.
-		Matrix modelMatrix = vecmath.rotationMatrix(axis, angle);
+		Matrix modelMatrix = vecmath.translationMatrix(move);
 		if (input.isKeyDown(Keyboard.KEY_T)) {
-			pyramid1.setTransformation(vecmath.translationMatrix(vecmath
-					.vector(0.1f, 0f, 0f)));
+			pyramid1.setTransformation(vecmath.translationMatrix(vecmath.vector(0.1f, 0f, 0f)));
 		}
+		
 
-		cube1.setTransformation(vecmath.translationMatrix(vecmath.vector(-1f,
-				0f, 0f)));
+//		cube1.setTransformation(vecmath.translationMatrix(vecmath.vector(0f, -1.1f, 0f)).mult(vecmath.rotationMatrix(vecmath.vector(0, 1f, 0f), cubeangle)));
+//		cubeangle ++;
+		haus.setTransformation(vecmath.translationMatrix(vecmath.vector(0f, -1.1f, 0f)));
 
 		defaultshader.setModelMatrixUniform(modelMatrix);
 		defaultshader.setProjectionMatrixUniform(projectionMatrix);
 		defaultshader.setViewMatrixUniform(viewMatrix);
 
-		pyramid1.display(modelMatrix);
-		cube1.display(modelMatrix);
+		haus.display(modelMatrix);
+		
 
 	}
 

@@ -190,14 +190,4 @@ private Vector vec(float x, float y, float z) {
   private float angle = 0;
 
 
-
-
-@Override
-public void init() {
-	vs.init(vertices);
-}
-
-
-
-
 }
