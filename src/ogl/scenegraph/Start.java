@@ -25,7 +25,7 @@ import ogl.app.OpenGLApp;
 import ogl.app.Util;
 import ogl.cube.Cube;
 import ogl.cube.Shader;
-import ogl.triangle.Triangle;
+import ogl.triangle.Pyramid;
 import ogl.vecmath.Color;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
@@ -44,19 +44,12 @@ public class Start implements App {
 	}
 
 	public Cube cube1;
-	public Triangle triangle1;
-
-	public int x;
-	public int y;
+	public Pyramid pyramid1;
 
 	private Shader defaultshader;
 
-	// init(), simulate(), display() kommen aus der alten RotatingCube Klasse
-	// setter
-	public void start(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
+	// Initialize the rotation angle of the cube.
+	private float angle = 0;
 
 	@Override
 	public void init() {
@@ -66,39 +59,20 @@ public class Start implements App {
 		// Enable depth testing.
 		glEnable(GL11.GL_DEPTH_TEST);
 
-		// ruft den shader auf
-			defaultshader = new Shader();
-		
+		// New Shader object
+		defaultshader = new Shader();
 
-		// cube1 = new Cube();
-		// cube1.init(defaultshader); //initialisiert mit o.g. shader
+		// Creates 3D-Objects
+		pyramid1 = new Pyramid(defaultshader, "Pyramide");
 
-		triangle1 = new Triangle(); // ist eigentlich pyramide
-		triangle1.init(defaultshader); // dito
-		
-		cube1 = new Cube(); // ist eigentlich pyramide
-		cube1.init(defaultshader); // dito
-		//triangle1.setTransformation(vecmath.translationMatrix((float)0.9, 0, 0)); 
+		cube1 = new Cube(defaultshader, "Würfel");
 
-		// ==translationVerschiebt (-links +rechts, -runter +hoch, -vor +zurück)
-		//triangle1.setTransformation(vecmath
-		//		.translationMatrix(0, (float) 0.5, 1));
-
-		// macht komischerweise gar nichts, vll schon und die camera geht mit
-		// house.setTransformation(vecmath.translationMatrix(-1, 1, 2));
 	}
 
-	// dreht irgendwas, aber laesst auch den cube verschwinden wenn 0.0.0
 	Vector axis = vecmath.vector(0, 1, 0);
 
-	// ich wollte das in while schleifen machen weil wir ja noch einen übergang
-	// brauchen
-	// aber jetzt isses nur so, wenn ich X als erstes drück und dann Y oder Z
-	// wird die Rotation
-	// nur schneller. vllt kann einer von euch was damit anfangen
-
-	public void rotate(float elapsed, Input input) {
-		// TODO mit rausziehen (angle von Cube uebegeben)
+	// TODO: in Object3D auslagern
+	public void simulate(float elapsed, Input input) {
 		while (input.isKeyToggled(Keyboard.KEY_X)) {
 			angle += 90 * elapsed;
 			axis = vecmath.vector(1, 0, 0);
@@ -113,27 +87,6 @@ public class Start implements App {
 			axis = vecmath.vector(0, 0, 1);
 			angle += 90 * elapsed;
 			break;
-		}
-	}
-
-	public void move(KeyEvent e) {
-		int y_speed = 0;
-		int x_speed = 0;
-		int y_position = 0;
-		int x_position = 0;
-
-		// ich weiß nicht wie ich die an die Position von unseren Objekten komme
-		// um sie zu verändern.
-		// positionData.position() += y_speed;
-
-		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-			y_speed = 2;
-		} else if (e.getKeyCode() == KeyEvent.VK_UP) {
-			y_speed = -2;
-		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			x_speed = -2;
-		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			x_speed = 2;
 		}
 	}
 
@@ -163,39 +116,23 @@ public class Start implements App {
 		Matrix viewMatrix = vecmath.lookatMatrix(vecmath.vector(0f, 0f, 3f),
 				vecmath.vector(0f, 0f, 0f), vecmath.vector(0f, 1f, 0f));
 
-		// TODO damit dreht sich der W�rfel, weil sich angle immer ver�ndert
-		// TODO dieser Angle soll allerding in die 3d objekt-klassen
-		// setzt neue Transformationsmatrix je nachdem ob triangle steht, wird
-		// triangle aufgerufen und bei cube cube
 		// The modeling transformation. Object space to world space.
 		Matrix modelMatrix = vecmath.rotationMatrix(axis, angle);
-		
-		triangle1.setTransformation(vecmath.translationMatrix(vecmath.vector(1f, 0f, 0f)));
-		cube1.setTransformation(vecmath.translationMatrix(vecmath.vector(-1f, 0f, 0f)));
+		if (input.isKeyDown(Keyboard.KEY_T)) {
+			pyramid1.setTransformation(vecmath.translationMatrix(vecmath
+					.vector(0.1f, 0f, 0f)));
+		}
 
-		defaultshader.activate();
+		cube1.setTransformation(vecmath.translationMatrix(vecmath.vector(-1f,
+				0f, 0f)));
 
 		defaultshader.setModelMatrixUniform(modelMatrix);
 		defaultshader.setProjectionMatrixUniform(projectionMatrix);
 		defaultshader.setViewMatrixUniform(viewMatrix);
 
-		triangle1.display(modelMatrix);
+		pyramid1.display(modelMatrix);
 		cube1.display(modelMatrix);
 
-		
 	}
-
-	// The attribute indices for the vertex data.
-	public static int vertexAttribIdx = 0;
-	public static int colorAttribIdx = 1;
-
-	// Width, depth and height of the cube divided by 2.
-	float w2 = 0.5f;
-	float h2 = 0.5f;
-	float d2 = 0.5f;
-
-	// TODO in die cube bringen, (ist schon aber nicht implementiert scheinbar)
-	// Initialize the rotation angle of the cube.
-	private float angle = 0;
 
 }

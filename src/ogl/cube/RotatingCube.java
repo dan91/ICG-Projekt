@@ -135,7 +135,6 @@ public void setProjectionMatrixUniform(MatrixUniform projectionMatrixUniform) {
    * 
    * @see cg2.cube.App#simulate(float, cg2.cube.Input)
    */
-  @Override
   public void simulate(float elapsed, Input input) {
     // Pressing key 'r' toggles the cube animation.
     if (input.isKeyToggled(Keyboard.KEY_R))
@@ -148,7 +147,6 @@ public void setProjectionMatrixUniform(MatrixUniform projectionMatrixUniform) {
    * 
    * @see cg2.cube.App#display(int, int, javax.media.opengl.GL2ES2)
    */
-  @Override
   public void display(int width, int height) {
     // Adjust the the viewport to the actual window size. This makes the
     // rendered image fill the entire window.
@@ -336,4 +334,10 @@ public static void setColorAttribIdx(int colorAttribIdx) {
 
   // Initialize the rotation angle of the cube.
   private float angle = 0;
+
+@Override
+public void display(int width, int height, Input input) {
+	// TODO Auto-generated method stub
+	
+}
 }

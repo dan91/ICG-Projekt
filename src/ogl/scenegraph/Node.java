@@ -1,4 +1,4 @@
-package icg.warmup;
+package ogl.scenegraph;
 
 import java.util.ArrayList;
 import java.util.List;

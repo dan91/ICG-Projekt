@@ -9,21 +9,22 @@ import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 
+import ogl.cube.Shader;
 import ogl.scenegraph.Node;
-import ogl.scenegraph.Object3D;
 import ogl.scenegraph.Vertex;
 import ogl.vecmath.Color;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
 
-public class Cube extends Node {
+public class Sphere extends Node {
 
-	
+	public Sphere() {
+		super("test");
+	}
 	Shader defaultshader;
-	
-	public Cube(Shader defaultshader, String name) {
-		super(name);
+	public void init(Shader defaultshader) {
 		this.defaultshader = defaultshader;
 
 		// Prepare the vertex data arrays.
@@ -40,7 +41,6 @@ public class Cube extends Node {
 		}
 		positionData.rewind();
 		colorData.rewind();
-		
 	}
 
 
@@ -51,16 +51,20 @@ public class Cube extends Node {
 
 		defaultshader.setModelMatrixUniform(m.mult(getTransformation()));
 
+		// Set camera.
+        setCamera(gl, glu, 30);
 
-		// Enable the vertex data arrays (with indices 0 and 1). We use a vertex
-		// position and a vertex color.
-		glVertexAttribPointer(vertexAttribIdx, 3, false, 0, positionData);
-		glEnableVertexAttribArray(vertexAttribIdx);
-		glVertexAttribPointer(colorAttribIdx, 3, false, 0, colorData);
-		glEnableVertexAttribArray(colorAttribIdx);
-
-		// Draw the triangles that form the cube from the vertex data arrays.
-		glDrawArrays(GL11.GL_TRIANGLES, 0, vertices.length);
+        // Draw sphere (possible styles: FILL, LINE, POINT).
+        GL11.glColor3f(0.3f, 0.5f, 1f);
+        GL11.GLUquadric earth = glu.gluNewQuadric();
+        GL11.gluQuadricDrawStyle(earth, GLU_FILL);
+        GL11.gluQuadricNormals(earth, GLU.GLU_FLAT);
+        GL1.gluQuadricOrientation(earth, GLU.GLU_OUTSIDE);
+        final float radius = 6.378f;
+        final int slices = 16;
+        final int stacks = 16;
+        glu.gluSphere(earth, radius, slices, stacks);
+        glu.gluDeleteQuadric(earth);
 	}
 
 
@@ -74,9 +78,18 @@ public class Cube extends Node {
 	float h2 = 0.5f;
 	float d2 = 0.5f;
 
-
-
 	
+
+	// Auxillary class to represent a single vertex.
+	private class Vertex {
+		Vector position;
+		Color color;
+
+		Vertex(Vector p, Color c) {
+			position = p;
+			color = c;
+		}
+	}
 
 	// Make construction of vertices easy on the eyes.
 	private Vertex v(Vector p, Color c) {

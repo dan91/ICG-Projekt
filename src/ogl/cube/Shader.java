@@ -67,6 +67,9 @@ public class Shader {
 		modelMatrixUniform = new MatrixUniform(program, "modelMatrix");
 		viewMatrixUniform = new MatrixUniform(program, "viewMatrix");
 		projectionMatrixUniform = new MatrixUniform(program, "projectionMatrix");
+		
+		glUseProgram(program);
+
 	}
 
 	// The vertex program source code.
@@ -95,7 +98,6 @@ public class Shader {
 	public void activate() {
 		// Activate the shader program and set the transformation matricies to the
 		// uniform variables.
-		glUseProgram(program);
 	}
 
 

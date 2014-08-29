@@ -24,7 +24,7 @@ public interface App {
    * @param input
    *          The current input state.
    */
-  //public void simulate(float elapsed, Input input);
+  public void simulate(float elapsed, Input input);
 
   /**
    * Override to render the scene. Called once for each frame.

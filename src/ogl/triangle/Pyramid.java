@@ -4,12 +4,13 @@ import static ogl.vecmathimp.FactoryDefault.vecmath;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import icg.warmup.Node;
 
 import java.nio.FloatBuffer;
 
 import ogl.app.MatrixUniform;
 import ogl.cube.Shader;
+import ogl.scenegraph.Node;
+import ogl.scenegraph.Vertex;
 import ogl.vecmath.Color;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
@@ -18,21 +19,15 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 
-public class Triangle extends Node {
+public class Pyramid extends Node {
 
-	public Triangle() {
-		super("");
-		// TODO Auto-generated constructor stub
-	}
-
-
-
+	
 	private Shader defaultshader;
 
 
-	public void init(Shader defaultshader) {
+	public Pyramid (Shader defaultshader, String name) {
+		super(name);
 		this.defaultshader = defaultshader;
-
 		// Prepare the vertex data arrays.
 		// Compile vertex data into a Java Buffer data structures that can be
 		// passed to the OpenGL API efficently.
@@ -47,6 +42,7 @@ public class Triangle extends Node {
 		}
 		positionData.rewind();
 		colorData.rewind();
+		
 	}
 
 
@@ -126,18 +122,6 @@ public class Triangle extends Node {
 			vec(-w2, -h2, d2),
 			vec(0, h2, 0)
 	};
-
-	// The colors of the triangle vertices.
-	//  private Color[] d = { 
-	//	      col(0, 0, 0), 
-	//	      col(1, 0, 0), 
-	//	      col(1, 1, 0), 
-	//	      col(0, 1, 0),
-	//	      col(1, 0, 1), 
-	//	      col(0, 0, 1), 
-	//	      col(0, 1, 1), 
-	//	      col(1, 1, 1) 
-	//  };
 
 	// The colors of the triangle vertices.
 	private Color[] c = { 

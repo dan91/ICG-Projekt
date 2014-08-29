@@ -1,0 +1,15 @@
+ICG Todo:
+
+- Kommentare DONE
+- Code säubern & sortieren DONE
+- App-Methoden in Node.java/Vererbung von Object3D (Paul)
+
+- Gruppieren von Elementen (Dan)
+- Vertices Indizes (Dan)
+
+- Anzeigen von Text (Katja)
+- Formular-Felder (Katja)
+
+- Datenstruktur für Aufgabenhierarchie
+
+- Rotation/Translation zur Darstellung von Ebenen
