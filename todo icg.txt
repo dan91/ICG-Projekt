@@ -4,8 +4,9 @@ ICG Todo:
 - Code säubern & sortieren DONE
 - App-Methoden in Node.java/Vererbung von Object3D (Paul)
 
-- Gruppieren von Elementen (Dan)
+- Gruppieren von Elementen (Dan) Node.java 
 - Vertices Indizes (Dan)
+- Ebenen-Navigation (Dan)
 
 - Anzeigen von Text (Katja)
 - Formular-Felder (Katja)

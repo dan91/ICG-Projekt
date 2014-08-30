@@ -12,6 +12,7 @@ import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
 
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -29,7 +30,6 @@ import ogl.triangle.Pyramid;
 import ogl.vecmath.Color;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
-
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -44,9 +44,12 @@ public class Start implements App {
 	}
 
 	public Cube cube1;
+	public Cube cube2;
 	public Pyramid pyramid1;
 	public Node haus;
+	public Node haus2;
 
+	
 	private Shader defaultshader;
 
 	// Initialize the rotation angle of the cube.
@@ -72,7 +75,10 @@ public class Start implements App {
 		haus.addNode(cube1);
 		haus.addNode(pyramid1);
 		
-
+		cube2 = new Cube(defaultshader, "Wuerfel 2");
+		
+		
+		
 	}
 
 	//Should be used for animations
@@ -84,6 +90,7 @@ public class Start implements App {
 		if (input.isKeyToggled(Keyboard.KEY_Y)) {
 			axis = vecmath.vector(0, 1, 0);
 			angle += 90 * elapsed;
+			
 		}
 		if (input.isKeyToggled(Keyboard.KEY_Z)) {
 			axis = vecmath.vector(0, 0, 1);
@@ -101,6 +108,7 @@ public class Start implements App {
 		if (input.isKeyDown(Keyboard.KEY_RIGHT)) {
 			move = move.add(vecmath.vector(0.03f, 0f, 0f));
 		}
+		angle += 90*elapsed;
 
 	}
 	
@@ -131,8 +139,10 @@ public class Start implements App {
 		Matrix projectionMatrix = vecmath.perspectiveMatrix(60f, aspect, 0.1f, 100f);
 
 		// The inverse camera transformation. World space to camera space.
-		Matrix viewMatrix = vecmath.lookatMatrix(vecmath.vector(0f, 0f, 3f), vecmath.vector(0f, 0f, 0f),
+		Matrix viewMatrix = vecmath.lookatMatrix(vecmath.vector(1f, 0f, 5f), vecmath.vector(0f, 0f, 0f),
 				vecmath.vector(0f, 1f, 0f));
+		
+		
 
 		// The modeling transformation. Object space to world space.
 		Matrix modelMatrix = vecmath.translationMatrix(move);
@@ -142,8 +152,8 @@ public class Start implements App {
 		
 		//Sets Transformations
         cube1.setTransformation(vecmath.translationMatrix(vecmath.vector(0f, -1.1f, 0f)));
-        haus.setTransformation(vecmath.translationMatrix(vecmath.vector(0, 1f, 0)).mult(vecmath.rotationMatrix(vecmath.vector(0, 1f, 0), angle)));
-        angle++;
+        haus.setTransformation(vecmath.translationMatrix(vecmath.vector(-1f, 1f, 0)).mult(vecmath.rotationMatrix(axis, angle)));
+        cube2.setTransformation(vecmath.translationMatrix(vecmath.vector(-1f, 0, 1f)));
 
         //Shader
 		defaultshader.setModelMatrixUniform(modelMatrix);
@@ -152,6 +162,7 @@ public class Start implements App {
 		
 		//Renders the Object with some magic
 		haus.display(modelMatrix);
+		cube2.display(modelMatrix);
 	}
 
 }
