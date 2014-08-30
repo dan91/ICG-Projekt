@@ -65,21 +65,17 @@ public class Start implements App {
 
 		// Creates 3D-Objects
 		pyramid1 = new Pyramid(defaultshader, "Pyramide");
-
 		cube1 = new Cube(defaultshader, "Wuerfel");
-		
 		haus = new Node("Haus");
 		
+		// Adds 3D-Objects to a Node
 		haus.addNode(cube1);
 		haus.addNode(pyramid1);
-		System.out.println(haus.toString());
 		
 
 	}
 
-
-
-	// TODO: in Object3D auslagern
+	//Should be used for animations
 	public void simulate(float elapsed, Input input) {
 		if (input.isKeyToggled(Keyboard.KEY_X)) {
 			angle += 90 * elapsed;
@@ -108,9 +104,9 @@ public class Start implements App {
 
 	}
 	
-	int cubeangle = 90;
-	Vector axis = vecmath.vector(0, 1, 0);
+	//Some class variables used to manipulate the modelmatrix in the display methode
 	private float angle = 0;
+	Vector axis = vecmath.vector(0, 1, 0);
 	Vector move = vecmath.vector(0, 0, 0);
 			
 	/*
@@ -144,18 +140,18 @@ public class Start implements App {
 			pyramid1.setTransformation(vecmath.translationMatrix(vecmath.vector(0.1f, 0f, 0f)));
 		}
 		
+		//Sets Transformations
+        cube1.setTransformation(vecmath.translationMatrix(vecmath.vector(0f, -1.1f, 0f)));
+        haus.setTransformation(vecmath.translationMatrix(vecmath.vector(0, 1f, 0)).mult(vecmath.rotationMatrix(vecmath.vector(0, 1f, 0), angle)));
+        angle++;
 
-//		cube1.setTransformation(vecmath.translationMatrix(vecmath.vector(0f, -1.1f, 0f)).mult(vecmath.rotationMatrix(vecmath.vector(0, 1f, 0f), cubeangle)));
-//		cubeangle ++;
-		haus.setTransformation(vecmath.translationMatrix(vecmath.vector(0f, -1.1f, 0f)));
-
+        //Shader
 		defaultshader.setModelMatrixUniform(modelMatrix);
 		defaultshader.setProjectionMatrixUniform(projectionMatrix);
 		defaultshader.setViewMatrixUniform(viewMatrix);
-
-		haus.display(modelMatrix);
 		
-
+		//Renders the Object with some magic
+		haus.display(modelMatrix);
 	}
 
 }

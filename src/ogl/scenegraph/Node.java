@@ -3,15 +3,17 @@ package ogl.scenegraph;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.w3c.dom.css.Counter;
-
 import static ogl.vecmathimp.FactoryDefault.vecmath;
 import ogl.vecmath.*;
 
 public class Node {
+	// Stores the transformation which should be done with this node
 	private Matrix transformation;
 
+	// Childnodes
 	private List<Node> nodes;
+
+	// Name of the mode
 	private String name;
 
 	public Node(String name) {
@@ -36,16 +38,36 @@ public class Node {
 		this.transformation = transformation;
 	}
 
-	//TODO: Funktioniert leider noch nicht ganz. Funktionsaufruf beendet Schleife.
-	public void display(Matrix m) {
+	// Sehr, sehr hässlicher Code der aber funktioniert!
+	// TODO: Wenn Ein Node einen weiteren Node enthaelt, der kein Objekt ist
+	// und dieser Node eine Trasformation hat, sollte sie nicht angezeigt
+	// werden.
+	// Muesste leicht zu fixen sein
+
+	static Node previous;
+	static Node first;
+	static boolean check = true;
+
+	public void display(int i, Matrix m) {
+		if (check) {
+			first = this;
+			check = false;
+		}
 		if (nodes.isEmpty()) {
-			this.display(m);
+			// Wird aufgerufen wenn 3D Objekt
+			this.display(m.mult(first.getTransformation()));
+			previous.display(i + 1, m);
+		} else {
+			if (i < nodes.size()) {
+				// Wenn Obejekt ein Kind besitzt. Eine Ebene Tiefer
+				previous = this;
+				nodes.get(i).display(i, m);
+			}
 		}
-		else{
-			for (int i = 0; i < nodes.size(); i++) {
-				nodes.get(i).display(m);
-			}	
-		}
+	}
+
+	public void display(Matrix m) {
+		display(0, m);
 	}
 
 	@Override
