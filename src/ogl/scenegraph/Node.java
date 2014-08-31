@@ -65,15 +65,34 @@ public class Node {
 			}
 		}
 	}
-
 	public void display(Matrix m) {
-		//display(0, m);
-		transformation = transformation.mult(getTransformation());
-		
-		for(Node n : this.nodes) {
-			n.display(transformation);
-		}
+		display(m, this);
 	}
+	public void display(Matrix m, Node n) {
+	    // do something with the current node instead of System.out
+	    System.out.println(this.name);
+	    transformation = transformation.mult(getTransformation());
+
+	    List<Node> children = n.nodes;
+	    for (int i = 0; i < children.size(); i++) {
+	        Node currentNode = children.get(i);
+	        if (currentNode.nodes.size() == 0) {	  
+	        	currentNode.display(transformation);
+	        }
+            display(m, currentNode);
+	    }
+	}
+//	public void display(Matrix m) {
+//		//display(0, m);
+//		transformation = transformation.mult(getTransformation());
+//		
+//		for(Node n : this.nodes) {
+//			while(n.nodes.size() > 0) {
+//				
+//			}
+//			n.display(transformation);
+//		}
+//	}
 
 	@Override
 	public String toString() {

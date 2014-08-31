@@ -54,6 +54,7 @@ public class StartDan implements App {
 	private Cube cube4;
 	private Cube cube5;
 	private Cube cube6;
+	private Node scene;
 
 	// Initialize the rotation angle of the cube.
 
@@ -86,6 +87,11 @@ public class StartDan implements App {
 		level2.addNode(cube4);
 		level2.addNode(cube5);
 		level2.addNode(cube6);
+		
+		scene = new Node("Scene");
+		
+		scene.addNode(level1);
+		scene.addNode(level2);
 		
 	}
 
@@ -157,7 +163,7 @@ public class StartDan implements App {
 		cube6.setTransformation(vecmath.translationMatrix(
 				vecmath.vector(1.5f, 1f, 0f)));
 		
-		level1.setTransformation(vecmath.translationMatrix(move));
+		scene.setTransformation(vecmath.translationMatrix(move));
 
 		// Shader
 		defaultshader.setModelMatrixUniform(modelMatrix);
@@ -165,8 +171,7 @@ public class StartDan implements App {
 		defaultshader.setViewMatrixUniform(viewMatrix);
 
 		// Renders the Object with some magic
-		level1.display(modelMatrix);
-		level2.display(modelMatrix);
+		scene.display(modelMatrix);
 	}
 
 }
