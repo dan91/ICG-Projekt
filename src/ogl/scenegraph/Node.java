@@ -38,7 +38,7 @@ public class Node {
 		this.transformation = transformation;
 	}
 
-	// Sehr, sehr hässlicher Code der aber funktioniert!
+	// Sehr, sehr hï¿½sslicher Code der aber funktioniert!
 	// TODO: Wenn Ein Node einen weiteren Node enthaelt, der kein Objekt ist
 	// und dieser Node eine Trasformation hat, sollte sie nicht angezeigt
 	// werden.
@@ -67,7 +67,12 @@ public class Node {
 	}
 
 	public void display(Matrix m) {
-		display(0, m);
+		//display(0, m);
+		transformation = transformation.mult(getTransformation());
+		
+		for(Node n : this.nodes) {
+			n.display(transformation);
+		}
 	}
 
 	@Override
