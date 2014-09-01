@@ -22,9 +22,12 @@ public class Node {
 		this.name = name;
 	}
 
+	// Error: parent Node is not correctly set
 	public void addNode(Node node) {
 		this.nodes.add(node);
 	}
+
+	
 
 	public void removeNode(int index) {
 		this.nodes.remove(index);
@@ -34,6 +37,10 @@ public class Node {
 		return this.transformation;
 	}
 
+	public List<Node> getNodes() {
+		return this.nodes;
+	}
+	
 	public void setTransformation(Matrix transformation) {
 		this.transformation = transformation;
 	}
@@ -120,7 +127,7 @@ public class Node {
 		Node n4 = new Node("N4");
 		n1.addNode(n2);
 		n2.addNode(n3);
-		n3.addNode(n4);
+		n1.addNode(n4);
 		System.out.println(n1.toString());
 	}
 }

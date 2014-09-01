@@ -55,6 +55,8 @@ public class StartDan implements App {
 	private Cube cube5;
 	private Cube cube6;
 	private Node scene;
+	private Node activeLevel;
+	private Node activeObject;
 
 	// Initialize the rotation angle of the cube.
 
@@ -70,43 +72,39 @@ public class StartDan implements App {
 		defaultshader = new Shader();
 
 		// Creates 3D-Objects
-		cube1 = new Cube(defaultshader, "Wuerfel");
-		cube2 = new Cube(defaultshader, "Wuerfel 2");
-		cube3 = new Cube(defaultshader, "Wuerfel 3");
-		cube4 = new Cube(defaultshader, "Wuerfel 4");
-		cube5 = new Cube(defaultshader, "Wuerfel 5");
-		cube6 = new Cube(defaultshader, "Wuerfel 6");
-
-		level1 = new Node("Level1");
-		level2 = new Node("Level2");
-		
-		level1.addNode(cube1);
-		level1.addNode(cube2);
-		level1.addNode(cube3);
-		
-		level2.addNode(cube4);
-		level2.addNode(cube5);
-		level2.addNode(cube6);
-		
+		int levels = 1; 
+		int objectsPerLevel = 3;
 		scene = new Node("Scene");
-		
-		scene.addNode(level1);
-		scene.addNode(level2);
-		
+		for(int i = 0; i < levels; i++) {
+			Node level = new Node("Level "+i);
+			for(int j = 0; j < objectsPerLevel; j++) {
+				Cube cube = new Cube(defaultshader, "Cube "+j);
+				cube.setTransformation(vecmath.translationMatrix(
+						vecmath.vector(1.5f*j, 0f, 0f)));
+				level.addNode(cube);
+			}
+			level.setTransformation(vecmath.translationMatrix(
+					vecmath.vector(0f, 0f, 5f)));
+			scene.addNode(level);
+		}
+		activeLevel = scene.getNodes().get(0);
+		activeObject = activeLevel.getNodes().get(0);
 	}
 
 	// Should be used for animations
 	public void simulate(float elapsed, Input input) {
-
 		if (input.isKeyDown(Keyboard.KEY_DOWN)) {
 			move = move.add(vecmath.vector(0, 0, +0.03f));
 		}
 		if (input.isKeyDown(Keyboard.KEY_UP)) {
 			move = move.add(vecmath.vector(move.x(), move.y(), -0.03f));
 		}
-
+		if (input.isKeyDown(Keyboard.KEY_RIGHT)) {
+			activeLevel.getNodes().get(1).setTransformation(vecmath.translationMatrix(vecmath.vector(1.5f, 0, 0)));
+			activeObject = activeLevel.getNodes().get(1);
+		}
 		
-		//angle1 += 90 * elapsed;
+		angle += 90 * elapsed;
 
 	}
 
@@ -149,20 +147,8 @@ public class StartDan implements App {
 
 		// Sets Transformations
 		
-		// translation of cubes so they don't overlap
-		cube1.setTransformation(vecmath.translationMatrix(
-				vecmath.vector(-1.5f, 0f, 0f)));
-		cube2.setTransformation(vecmath.translationMatrix(
-				vecmath.vector(0f, 0f, 0f)));
-		cube3.setTransformation(vecmath.translationMatrix(
-				vecmath.vector(1.5f, 0f, 0f)));
-		cube4.setTransformation(vecmath.translationMatrix(
-				vecmath.vector(-1.5f, 1f, 0f)));
-		cube5.setTransformation(vecmath.translationMatrix(
-				vecmath.vector(0f, 1f, 0f)));
-		cube6.setTransformation(vecmath.translationMatrix(
-				vecmath.vector(1.5f, 1f, 0f)));
-		
+		activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), angle));
+
 		scene.setTransformation(vecmath.translationMatrix(move));
 
 		// Shader
