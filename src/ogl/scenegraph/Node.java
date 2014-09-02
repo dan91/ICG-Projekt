@@ -17,17 +17,36 @@ public class Node {
 	private String name;
 
 	private Node parent;
+	private Node previous;
+	private int index;
 
 	public Node(String name) {
 		setTransformation(vecmath.identityMatrix());
 		this.nodes = new ArrayList<Node>();
 		this.name = name;
+		
 	}
 
 	// Error: parent Node is not correctly set
 	public void addNode(Node node) {
 		this.nodes.add(node);
 		node.parent = this;
+		this.index = node.getParent().getNodes().indexOf(node);
+		if(index != 0)
+			node.previous = node.getParent().getNodes().get(index-1);
+		
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
+	public Node getParent() {
+		return parent;
 	}
 
 	public void removeNode(int index) {
@@ -52,7 +71,6 @@ public class Node {
 	// werden.
 	// Muesste leicht zu fixen sein
 
-	static Node previous;
 	static Node first;
 	static boolean check = true;
 
@@ -82,15 +100,15 @@ public class Node {
 
 	public void display(Matrix m, Node n) {
 		// do something with the current node instead of System.out
-		transformation = m.mult(getTransformation());
+		transformation = m.mult(transformation);
 
 		List<Node> children = n.nodes;
 		for (int i = 0; i < children.size(); i++) {
 			Node currentNode = children.get(i);
 			if (currentNode.nodes.size() == 0) {
-				currentNode.display(transformation);
+				currentNode.display(n.transformation);
 			}
-			display(transformation, currentNode);
+			display(m, currentNode);
 		}
 	}
 

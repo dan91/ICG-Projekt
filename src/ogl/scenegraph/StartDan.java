@@ -48,12 +48,7 @@ public class StartDan implements App {
 	public Cube cube3;
 
 	private Shader defaultshader;
-	private float angleRotateX;
-	private Node level1;
-	private Node level2;
-	private Cube cube4;
-	private Cube cube5;
-	private Cube cube6;
+
 	private Node scene;
 	private Node activeLevel;
 	private Node activeObject;
@@ -75,7 +70,7 @@ public class StartDan implements App {
 		defaultshader = new Shader();
 
 		// Creates 3D-Objects
-		levels = 2; 
+		levels = 3; 
 		objectsPerLevel = 5;
 		scene = new Node("Scene");
 		for(float i = 0; i < levels; i++) {
@@ -87,23 +82,51 @@ public class StartDan implements App {
 				level.addNode(cube);
 			}
 			level.setTransformation(vecmath.translationMatrix(
-					vecmath.vector(0f, 1.5f*i, 0f)));
+					vecmath.vector(0f, -1.5f*i, 0f)));
 			scene.addNode(level);
 		}
 		countObject = 0;
 		activeLevel = scene.getNodes().get(0);
 		activeObject = activeLevel.getNodes().get(countObject);
 	}
-
+	boolean changeInProgress = false;
+	private int countLevel;
 	// Should be used for animations
 	public void simulate(float elapsed, Input input) {
-		if (input.isKeyDown(Keyboard.KEY_DOWN)) {
-			move = move.add(vecmath.vector(0, 0, +0.03f));
-		}
 		if (input.isKeyDown(Keyboard.KEY_UP)) {
-			move = move.add(vecmath.vector(move.x(), move.y(), -0.03f));
+			if(changeInProgress == true) {
+				//stop rotation of active object
+				activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), 0).mult(vecmath.translationMatrix(activeObject.getTransformation().getPosition())));
+				// increment count if count smaller amount of objects per level
+				if(countLevel > 0)
+					countLevel--;
+				else if(countLevel == 0)
+					countLevel = levels-1;
+				changeInProgress = false;
+
+				// set active object to 
+				activeLevel = scene.getNodes().get(countLevel);
+				activeObject = scene.getNodes().get(countLevel).getNodes().get(countObject);
+				}
 		}
-		if (input.isKeyToggled(Keyboard.KEY_RIGHT)) {	
+		else if (input.isKeyDown(Keyboard.KEY_DOWN)) {
+			if(changeInProgress == true) {
+				//stop rotation of active object
+				activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), 0).mult(vecmath.translationMatrix(activeObject.getTransformation().getPosition())));
+				// increment count if count smaller amount of objects per level
+				if(countLevel < levels-1)
+					countLevel++;
+				else if(countLevel == levels-1)
+					countLevel = 0;
+				changeInProgress = false;
+
+				// set active object to 
+				activeLevel = scene.getNodes().get(countLevel);
+				activeObject = scene.getNodes().get(countLevel).getNodes().get(countObject);
+				}
+		}
+		else if (input.isKeyDown(Keyboard.KEY_RIGHT)) {	
+			if(changeInProgress == true) {
 			//stop rotation of active object
 			activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), 0).mult(vecmath.translationMatrix(activeObject.getTransformation().getPosition())));
 			// increment count if count smaller amount of objects per level
@@ -111,10 +134,31 @@ public class StartDan implements App {
 				countObject++;
 			else if(countObject == objectsPerLevel-1)
 				countObject = 0;
+			changeInProgress = false;
+
 			// set active object to 
 			activeObject = activeLevel.getNodes().get(countObject);
+			}
 			
+		}
+		else if (input.isKeyDown(Keyboard.KEY_LEFT)) {	
+			if(changeInProgress == true) {
+			//stop rotation of active object
+			activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), 0).mult(vecmath.translationMatrix(activeObject.getTransformation().getPosition())));
+			// increment count if count smaller amount of objects per level
+			if(countObject > 0)
+				countObject--;
+			else if(countObject == 0)
+				countObject = objectsPerLevel-1;
+			changeInProgress = false;
+
+			// set active object to 
+			activeObject = activeLevel.getNodes().get(countObject);
+			}
 			
+		}
+		else {
+			changeInProgress = true;
 		}
 		
 		activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), angle).mult(vecmath.translationMatrix(activeObject.getTransformation().getPosition())));
@@ -163,7 +207,7 @@ public class StartDan implements App {
 		// Sets Transformations
 		//activeObject.setTransformation(vecmath.translationMatrix(vecmath.vector(-2f, -1.5f, 4f)));
 
-		scene.setTransformation(vecmath.translationMatrix(move));
+		scene.getNodes().get(0).setTransformation(vecmath.translationMatrix(move));
 
 		// Shader
 		defaultshader.setModelMatrixUniform(modelMatrix);

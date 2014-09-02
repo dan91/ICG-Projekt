@@ -1,6 +1,5 @@
 package ogl.scenegraph;
 
-import java.awt.DisplayMode;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -38,14 +37,7 @@ public void init(){
 public void render(){
 	GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 	GL11.glLoadIdentity();
-	GL11.glColor3f (1,0,0);
-	GL11.glBegin(GL11.GL_QUADS);
-	GL11.glVertex2f(100,100);
-	GL11.glVertex2f(100+64,100);
-	GL11.glVertex2f(100+64,100+64);
-	GL11.glVertex2f(100,100+64);
-	GL11.glEnd();
-	
+
 	GL11.glColor3f(1, 1, 1);
 	SimpleText.drawString("Hello World", 300, 300);
 	
