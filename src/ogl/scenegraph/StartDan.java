@@ -57,6 +57,9 @@ public class StartDan implements App {
 	private Node scene;
 	private Node activeLevel;
 	private Node activeObject;
+	private int countObject;
+	private int objectsPerLevel;
+	private int levels;
 
 	// Initialize the rotation angle of the cube.
 
@@ -72,23 +75,24 @@ public class StartDan implements App {
 		defaultshader = new Shader();
 
 		// Creates 3D-Objects
-		int levels = 1; 
-		int objectsPerLevel = 3;
+		levels = 2; 
+		objectsPerLevel = 5;
 		scene = new Node("Scene");
-		for(int i = 0; i < levels; i++) {
+		for(float i = 0; i < levels; i++) {
 			Node level = new Node("Level "+i);
-			for(int j = 0; j < objectsPerLevel; j++) {
+			for(float j = 0; j < objectsPerLevel; j++) {
 				Cube cube = new Cube(defaultshader, "Cube "+j);
 				cube.setTransformation(vecmath.translationMatrix(
 						vecmath.vector(1.5f*j, 0f, 0f)));
 				level.addNode(cube);
 			}
 			level.setTransformation(vecmath.translationMatrix(
-					vecmath.vector(0f, 0f, 5f)));
+					vecmath.vector(0f, 1.5f*i, 0f)));
 			scene.addNode(level);
 		}
+		countObject = 0;
 		activeLevel = scene.getNodes().get(0);
-		activeObject = activeLevel.getNodes().get(0);
+		activeObject = activeLevel.getNodes().get(countObject);
 	}
 
 	// Should be used for animations
@@ -99,10 +103,21 @@ public class StartDan implements App {
 		if (input.isKeyDown(Keyboard.KEY_UP)) {
 			move = move.add(vecmath.vector(move.x(), move.y(), -0.03f));
 		}
-		if (input.isKeyDown(Keyboard.KEY_RIGHT)) {
-			activeLevel.getNodes().get(1).setTransformation(vecmath.translationMatrix(vecmath.vector(1.5f, 0, 0)));
-			activeObject = activeLevel.getNodes().get(1);
+		if (input.isKeyToggled(Keyboard.KEY_RIGHT)) {	
+			//stop rotation of active object
+			activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), 0).mult(vecmath.translationMatrix(activeObject.getTransformation().getPosition())));
+			// increment count if count smaller amount of objects per level
+			if(countObject < objectsPerLevel-1)
+				countObject++;
+			else if(countObject == objectsPerLevel-1)
+				countObject = 0;
+			// set active object to 
+			activeObject = activeLevel.getNodes().get(countObject);
+			
+			
 		}
+		
+		activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), angle).mult(vecmath.translationMatrix(activeObject.getTransformation().getPosition())));
 		
 		angle += 90 * elapsed;
 
@@ -139,15 +154,14 @@ public class StartDan implements App {
 				100f);
 
 		// The inverse camera transformation. World space to camera space.
-		Matrix viewMatrix = vecmath.lookatMatrix(vecmath.vector(-1f, 0f, 5f),
-				vecmath.vector(0f, 0f, 0f), vecmath.vector(0f, 1f, 0f));
+		Matrix viewMatrix = vecmath.lookatMatrix(vecmath.vector(3f, 0f, 7f),
+				vecmath.vector(3f, 0f, 0f), vecmath.vector(0f, 1f, 0f));
 
 		// The modeling transformation. Object space to world space.
 		Matrix modelMatrix = vecmath.translationMatrix(vecmath.vector(0, 0, 0));
 
 		// Sets Transformations
-		
-		activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), angle));
+		//activeObject.setTransformation(vecmath.translationMatrix(vecmath.vector(-2f, -1.5f, 4f)));
 
 		scene.setTransformation(vecmath.translationMatrix(move));
 
