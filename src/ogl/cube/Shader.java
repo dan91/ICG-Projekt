@@ -8,18 +8,21 @@ import static org.lwjgl.opengl.GL20.glCreateShader;
 import static org.lwjgl.opengl.GL20.glLinkProgram;
 import static org.lwjgl.opengl.GL20.glShaderSource;
 import static org.lwjgl.opengl.GL20.glUseProgram;
+import org.lwjgl.opengl.GL20;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.List;
+
 import ogl.app.MatrixUniform;
 import ogl.app.Util;
 import ogl.vecmath.Matrix;
 
-import org.lwjgl.opengl.GL20;
-
 
 public class Shader {
 	
-	
-
-
 	// The shader program.
 	private int program;
 
@@ -31,9 +34,26 @@ public class Shader {
 	// The attribute indices for the vertex data.
 	public static int vertexAttribIdx = 0;
 	public static int colorAttribIdx = 1;
+	
+	// The fragment program source code.
+	private String[] fsSource;
+	
+	// The vertex program source code.
+	private String[] vsSource;
 
 
 	public Shader() {
+		//Import shader from txt.
+        try {
+        	List<String> vs = Files.readAllLines(new File("src/ogl/cube/vs.txt").toPath(), StandardCharsets.UTF_8);
+			vsSource = vs.toArray(new String[vs.size()]);
+			List<String> fs = Files.readAllLines(new File("src/ogl/cube/fs.txt").toPath(), StandardCharsets.UTF_8);
+			fsSource = fs.toArray(new String[fs.size()]);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		// Create and compile the vertex shader.
 		int vs = glCreateShader(GL20.GL_VERTEX_SHADER);
 		glShaderSource(vs, vsSource);
@@ -72,34 +92,10 @@ public class Shader {
 
 	}
 
-	// The vertex program source code.
-	private String[] vsSource = {
-			"uniform mat4 modelMatrix;",
-			"uniform mat4 viewMatrix;",
-			"uniform mat4 projectionMatrix;",
-
-			"attribute vec3 vertex;",
-			"attribute vec3 color;",
-			"varying vec3 fcolor;",
-
-			"void main() {",
-			"  fcolor = color;",
-			"  gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertex, 1);",
-	"}" };
-
-	// The fragment program source code.
-	private String[] fsSource = { 
-			"varying vec3 fcolor;",
-			"void main() {", 
-			"  gl_FragColor = vec4(fcolor, 1.0);", 
-	"}" };
-
-
 	public void activate() {
 		// Activate the shader program and set the transformation matricies to the
 		// uniform variables.
 	}
-
 
 	//Aufgabe 2.2
 	public void setModelMatrixUniform(Matrix modelMatrixUniform) {

@@ -16,7 +16,9 @@ import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.util.prefs.BackingStoreException;
 
+import javax.swing.plaf.SliderUI;
 import javax.swing.text.Position;
 
 import ogl.app.App;
@@ -25,11 +27,13 @@ import ogl.app.MatrixUniform;
 import ogl.app.OpenGLApp;
 import ogl.app.Util;
 import ogl.cube.Cube;
+import ogl.cube.Plane;
 import ogl.cube.Shader;
 import ogl.triangle.Pyramid;
 import ogl.vecmath.Color;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -42,19 +46,35 @@ public class StartDan implements App {
 	static public void main(String[] args) {
 		new OpenGLApp("ToDo Liste", new StartDan()).start();
 	}
-
-	public Cube cube1;
-	public Cube cube2;
-	public Cube cube3;
-
+	
+	//default shader object used to display the objects in the scenegraph
 	private Shader defaultshader;
 
-	private Node scene;
+	//root node of the scenegraph
+	private Node root;
+	
+	//camera object
+	private Camera cam;
+	
+	//pointers on active elements
+	private Node activePlane;
 	private Node activeLevel;
 	private Node activeObject;
 	private int countObject;
 	private int objectsPerLevel;
 	private int levels;
+	private int countLevel;
+	
+	//animationshelper
+	private boolean changeInProgress = false;
+	private boolean zoomInProgress = false;
+	private boolean zoomOutProgress = false;
+
+	//timer
+	private float timeElapsed = 0;
+	private float actionTime = 0;
+	
+	Plane background;
 
 	// Initialize the rotation angle of the cube.
 
@@ -70,12 +90,17 @@ public class StartDan implements App {
 		defaultshader = new Shader();
 
 		// Creates 3D-Objects
-		levels = 3; 
-		objectsPerLevel = 5;
-		scene = new Node("Scene");
-		for(float i = 0; i < levels; i++) {
+		background = new Plane(defaultshader, "Background");
+
+		
+		root = new Node("Root");
+	
+		root.addNode(new Node("Plane1"));
+		//Draws level
+		for(float i = 0; i < 4; i++) {
+			//Draws objects
 			Node level = new Node("Level "+i);
-			for(float j = 0; j < objectsPerLevel; j++) {
+			for(float j = 0; j < 5; j++) {
 				Cube cube = new Cube(defaultshader, "Cube "+j);
 				cube.setTransformation(vecmath.translationMatrix(
 						vecmath.vector(1.5f*j, 0f, 0f)));
@@ -83,16 +108,55 @@ public class StartDan implements App {
 			}
 			level.setTransformation(vecmath.translationMatrix(
 					vecmath.vector(0f, -1.5f*i, 0f)));
-			scene.addNode(level);
+			root.getNodes().get(0).addNode(level);
 		}
 		countObject = 0;
-		activeLevel = scene.getNodes().get(0);
+		activeLevel = root.getNodes().get(0).getNodes().get(0);
 		activeObject = activeLevel.getNodes().get(countObject);
+		
+		Node sceneX = new Node("Scene2");
+		Node levelX = new Node("LevelX");
+		Cube cubeX = new Cube(defaultshader, "CubeX");
+		levelX.setTransformation(vecmath.translationMatrix(vecmath.vector(0, 0, -11)));
+		levelX.addNode(cubeX);
+		sceneX.addNode(levelX);
+		root.getNode(0).getNode(0).getNode(0).addNode(sceneX);
+		
+		//Creates Camera
+		cam = new Camera();
+		
+		activePlane = root.getNode(0);
+		levels = activePlane.getNodes().size();
+		objectsPerLevel = activeLevel.getNodes().size();
 	}
-	boolean changeInProgress = false;
-	private int countLevel;
+	
 	// Should be used for animations
 	public void simulate(float elapsed, Input input) {
+		
+		timeElapsed += elapsed;
+//		System.out.println(timeElapsed);
+		
+		//Animation of the camera
+		if (input.isKeyDown(Keyboard.KEY_W)) {
+			cam.moveUp(elapsed);
+		}
+		if (input.isKeyDown(Keyboard.KEY_S)) {
+			cam.moveDown(elapsed);
+		}
+		if (input.isKeyDown(Keyboard.KEY_A)) {
+			cam.moveLeft(elapsed);
+		}
+		if (input.isKeyDown(Keyboard.KEY_D)) {
+			cam.moveRight(elapsed);
+		}
+		if (input.isKeyDown(Keyboard.KEY_Q)) {
+			cam.moveIn(elapsed);
+		}
+		if (input.isKeyDown(Keyboard.KEY_Y)) {
+			cam.moveOut(elapsed);
+		}
+		
+		//Animation of the Objects
 		if (input.isKeyDown(Keyboard.KEY_UP)) {
 			if(changeInProgress == true) {
 				//stop rotation of active object
@@ -105,8 +169,8 @@ public class StartDan implements App {
 				changeInProgress = false;
 
 				// set active object to 
-				activeLevel = scene.getNodes().get(countLevel);
-				activeObject = scene.getNodes().get(countLevel).getNodes().get(countObject);
+				activeLevel = root.getNodes().get(0).getNodes().get(countLevel);
+				activeObject = root.getNodes().get(0).getNodes().get(countLevel).getNodes().get(countObject);
 				}
 		}
 		else if (input.isKeyDown(Keyboard.KEY_DOWN)) {
@@ -121,8 +185,8 @@ public class StartDan implements App {
 				changeInProgress = false;
 
 				// set active object to 
-				activeLevel = scene.getNodes().get(countLevel);
-				activeObject = scene.getNodes().get(countLevel).getNodes().get(countObject);
+				activeLevel = root.getNodes().get(0).getNodes().get(countLevel);
+				activeObject = root.getNodes().get(0).getNodes().get(countLevel).getNodes().get(countObject);
 				}
 		}
 		else if (input.isKeyDown(Keyboard.KEY_RIGHT)) {	
@@ -157,9 +221,50 @@ public class StartDan implements App {
 			}
 			
 		}
+		else if (input.isKeyDown(Keyboard.KEY_RETURN)) {	
+			if(changeInProgress == true) {	
+				if (activeObject.getNodes().size() != 0) {
+					zoomInProgress = true;
+					actionTime = timeElapsed;
+				}
+			}
+			
+		}
+		else if (input.isKeyDown(Keyboard.KEY_BACK)) {
+			if(changeInProgress == true) {
+				if (activePlane.getParent() != root) {
+					zoomOutProgress = true;
+					actionTime = timeElapsed;
+				}
+			}
+		}
+		else if (input.isKeyDown(Keyboard.KEY_P)) {	
+			if(changeInProgress == true) {
+				((Cube) activeObject).setTexture();
+			}
+		}
+		
 		else {
 			changeInProgress = true;
 		}
+		
+		if (zoomInProgress == true && actionTime + 2.0  > timeElapsed) {
+			cam.moveIn(elapsed);
+		}
+		else if (zoomInProgress == true) {
+			zoomInProgress = false;
+			activePlane = activeObject.getNode(0);
+			activeObject = activePlane.getNode(0).getNode(0);
+		}
+		if (zoomOutProgress == true && actionTime + 2.0  > timeElapsed) {
+			cam.moveOut(elapsed);
+		}
+		else if (zoomOutProgress == true) {
+			zoomOutProgress = false;
+			activeObject = activePlane.getParent();
+			activePlane = activePlane.getParent().getParent().getParent();
+		}
+		
 		
 		activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), angle).mult(vecmath.translationMatrix(activeObject.getTransformation().getPosition())));
 		
@@ -198,8 +303,8 @@ public class StartDan implements App {
 				100f);
 
 		// The inverse camera transformation. World space to camera space.
-		Matrix viewMatrix = vecmath.lookatMatrix(vecmath.vector(3f, 0f, 7f),
-				vecmath.vector(3f, 0f, 0f), vecmath.vector(0f, 1f, 0f));
+		Matrix viewMatrix = cam.matrix();
+		
 
 		// The modeling transformation. Object space to world space.
 		Matrix modelMatrix = vecmath.translationMatrix(vecmath.vector(0, 0, 0));
@@ -207,7 +312,7 @@ public class StartDan implements App {
 		// Sets Transformations
 		//activeObject.setTransformation(vecmath.translationMatrix(vecmath.vector(-2f, -1.5f, 4f)));
 
-		scene.getNodes().get(0).setTransformation(vecmath.translationMatrix(move));
+		root.getNodes().get(0).getNodes().get(0).setTransformation(vecmath.translationMatrix(move));
 
 		// Shader
 		defaultshader.setModelMatrixUniform(modelMatrix);
@@ -215,7 +320,11 @@ public class StartDan implements App {
 		defaultshader.setViewMatrixUniform(viewMatrix);
 
 		// Renders the Object with some magic
-		scene.display(modelMatrix);
+		activePlane.display(modelMatrix);
+		if (activeObject.getNodes().size() != 0) {
+			activeObject.getNode(0).display(modelMatrix);
+		}
+        background.display(vecmath.matrix(vecmath.vector(1, 0, 0), vecmath.vector(0, 1, 0), vecmath.vector(0, 0, 1)));
 	}
 
 }

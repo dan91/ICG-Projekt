@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ogl.vecmathimp.FactoryDefault.vecmath;
+import ogl.cube.Cube;
 import ogl.vecmath.*;
 
 public class Node {
@@ -60,39 +61,16 @@ public class Node {
 	public List<Node> getNodes() {
 		return this.nodes;
 	}
+	
+	public Node getNode(int index){
+		return nodes.get(index);
+	}
 
 	public void setTransformation(Matrix transformation) {
 		this.transformation = transformation;
 	}
 
-	// Sehr, sehr hässlicher Code der aber funktioniert!
-	// TODO: Wenn Ein Node einen weiteren Node enthaelt, der kein Objekt ist
-	// und dieser Node eine Trasformation hat, sollte sie nicht angezeigt
-	// werden.
-	// Muesste leicht zu fixen sein
-
-	static Node first;
-	static boolean check = true;
-
 	private static String output;
-
-	public void display(int i, Matrix m) {
-		if (check) {
-			first = this;
-			check = false;
-		}
-		if (nodes.isEmpty()) {
-			// Wird aufgerufen wenn 3D Objekt
-			this.display(m.mult(first.getTransformation()));
-			previous.display(i + 1, m);
-		} else {
-			if (i < nodes.size()) {
-				// Wenn Obejekt ein Kind besitzt. Eine Ebene Tiefer
-				previous = this;
-				nodes.get(i).display(i, m);
-			}
-		}
-	}
 
 	public void display(Matrix m) {
 		display(m, this);
@@ -105,24 +83,15 @@ public class Node {
 		List<Node> children = n.nodes;
 		for (int i = 0; i < children.size(); i++) {
 			Node currentNode = children.get(i);
-			if (currentNode.nodes.size() == 0) {
+//			if (currentNode.nodes.size() == 0 ) {
+//				currentNode.display(n.transformation);
+//			}
+			if (currentNode instanceof Cube) {
 				currentNode.display(n.transformation);
 			}
-			display(m, currentNode);
+			else display(transformation, currentNode);
 		}
 	}
-
-	// public void display(Matrix m) {
-	// //display(0, m);
-	// transformation = transformation.mult(getTransformation());
-	//
-	// for(Node n : this.nodes) {
-	// while(n.nodes.size() > 0) {
-	//
-	// }
-	// n.display(transformation);
-	// }
-	// }
 
 	public static String visitRecursively(Node node) {
 		output = "[Node name=" + node.name + "]\n";

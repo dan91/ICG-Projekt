@@ -19,7 +19,7 @@ import ogl.vecmath.Matrix;
 import ogl.vecmath.TexCoord;
 import ogl.vecmath.Vector;
 
-public class Cube extends Node {
+public class Plane extends Node {
 
 	Shader defaultshader;
 	
@@ -27,9 +27,7 @@ public class Cube extends Node {
 	private FloatBuffer colorData;
 	private FloatBuffer textureData;
 	
-	Texture tex;
-	
-	public Cube(Shader defaultshader, String name) {
+	public Plane(Shader defaultshader, String name) {
 		super(name);
 		this.defaultshader = defaultshader;
 
@@ -52,7 +50,7 @@ public class Cube extends Node {
 		colorData.rewind();
 		textureData.rewind();
 		
-		tex = new Texture(new File("res/Test1.PNG"));
+//		new Texture(new File("D:\\Dokumente\\Github\\ICG-Projekt\\res\\Test1.PNG"));
 		
 	}
 	
@@ -71,12 +69,7 @@ public class Cube extends Node {
 		glEnableVertexAttribArray(textureAttribIdx);
 
 		// Draw the triangles that form the cube from the vertex data arrays.
-		tex.bind();
 		glDrawArrays(GL11.GL_TRIANGLES, 0, vertices.length);
-	}
-	
-	public void setTexture(){
-		tex = new Texture(new File("res/Test2.PNG"));
 	}
 	
 	// The attribute indices for the vertex data.
@@ -111,21 +104,11 @@ public class Cube extends Node {
 
 	  // The colors of the cube vertices.
 	  private Color[] c = { 
-	      col(0, 0, 0), 
-	      col(1, 0, 0), 
-	      col(1, 1, 0), 
-	      col(0, 1, 0),
-	      col(1, 0, 1), 
-	      col(0, 0, 1), 
-	      col(0, 1, 1), 
-	      col(1, 1, 1),
-	      col(1, 23, 1) 
+	      col(0, 0, 2.55f), 
 	  };
 	  
 	  private TexCoord[] t = {
 			  tex(0, 0),
-			  tex(1, 0),
-			  tex(1, 1)
 	  };
 	  
 	  
@@ -144,52 +127,21 @@ public class Cube extends Node {
 	  
 	  // The positions of the cube vertices.
 	  private Vector[] p = { 
-		      vec(-w2, -h2, -d2), 
-		      vec(w2, -h2, -d2),
-		      vec(w2, h2, -d2), 
-		      vec(-w2, h2, -d2), 
-		      vec(w2, -h2, d2), 
-		      vec(-w2, -h2, d2),
-		      vec(-w2, h2, d2), 
-		      vec(w2, h2, d2),
-		      vec(0, 2*h2, 0)
+		      vec( 0, 0, -2), 
+		      vec( 1024, 0, -2),
+		      vec( 0, 1024, -2), 
+		      vec(-1024, 0, -2), 
+		      vec( 0,-1024, -2), 
 		  };
 	  
 
 		  // Vertices combine position and color information. Every four vertices define
 		  // one side of the cube.
-		  private Vertex[] vertices = {
-		      // front
-		      v(p[0], c[0], t[0]), v(p[2], c[1], t[1]), v(p[3], c[3], t[2]),
-		      // front 2
-		      v(p[0], c[0], t[0]), v(p[1], c[1], t[1]), v(p[2], c[3], t[2]),
-		     
-		      // right
-		      v(p[1], c[1], t[0]), v(p[7], c[4], t[1]), v(p[2], c[7], t[2]),
-		      // right 2
-		      v(p[1], c[1], t[0]), v(p[4], c[4], t[1]), v(p[7], c[7], t[2]),
-		      
-		      // back
-		      v(p[4], c[1], t[0]), v(p[6], c[4], t[1]), v(p[7], c[7], t[2]),
-		      // back 2
-		      v(p[4], c[1], t[0]), v(p[5], c[4], t[1]), v(p[6], c[7], t[2]),
-		      
-		      // left
-		      v(p[5], c[1], t[0]), v(p[3], c[4], t[1]), v(p[6], c[7], t[2]),
-		      // left 2
-		      v(p[5], c[1], t[0]), v(p[0], c[4], t[1]), v(p[3], c[7], t[2]),
-		      
-		
-		      // top
-		      v(p[3], c[3], t[0]), v(p[7], c[7], t[1]), v(p[6], c[6], t[2]),
-		      // top2
-		      v(p[3], c[3], t[0]), v(p[2], c[7], t[1]), v(p[7], c[6], t[2]),
-		      
-		      // bottom
-		      v(p[5], c[5], t[0]), v(p[1], c[1], t[1]), v(p[0], c[0], t[2]),
-		      // bottom 2
-		      v(p[5], c[5], t[0]), v(p[4], c[1], t[1]), v(p[1], c[0], t[2]),
-		      
+		  public Vertex[] vertices = {
+		      v(p[0], c[0], t[0]), v(p[1], c[0], t[0]), v(p[2], c[0], t[0]),
+		      v(p[0], c[0], t[0]), v(p[2], c[0], t[0]), v(p[3], c[0], t[0]),
+		      v(p[0], c[0], t[0]), v(p[3], c[0], t[0]), v(p[4], c[0], t[0]),
+		      v(p[0], c[0], t[0]), v(p[4], c[0], t[0]), v(p[1], c[0], t[0]),
 		  };
 	  
 }
