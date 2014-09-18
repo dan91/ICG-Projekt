@@ -8,12 +8,15 @@ import static org.lwjgl.opengl.GL20.glCreateShader;
 import static org.lwjgl.opengl.GL20.glLinkProgram;
 import static org.lwjgl.opengl.GL20.glShaderSource;
 import static org.lwjgl.opengl.GL20.glUseProgram;
+
 import org.lwjgl.opengl.GL20;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import ogl.app.MatrixUniform;
@@ -45,10 +48,25 @@ public class Shader {
 	public Shader() {
 		//Import shader from txt.
         try {
-        	List<String> vs = Files.readAllLines(new File("src/ogl/cube/vs.txt").toPath(), StandardCharsets.UTF_8);
-			vsSource = vs.toArray(new String[vs.size()]);
-			List<String> fs = Files.readAllLines(new File("src/ogl/cube/fs.txt").toPath(), StandardCharsets.UTF_8);
-			fsSource = fs.toArray(new String[fs.size()]);
+        	FileReader fileReader = new FileReader("src/ogl/cube/vs.txt");
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            List<String> lines = new ArrayList<String>();
+            String line = null;
+            while ((line = bufferedReader.readLine()) != null) {
+                lines.add(line);
+            }
+            bufferedReader.close();
+            vsSource = lines.toArray(new String[lines.size()]);
+
+            FileReader fileReader2 = new FileReader("src/ogl/cube/fs.txt");
+            BufferedReader bufferedReader2 = new BufferedReader(fileReader2);
+            List<String> lines2 = new ArrayList<String>();
+            String line2 = null;
+            while ((line2 = bufferedReader2.readLine()) != null) {
+                lines2.add(line2);
+            }
+            bufferedReader2.close();
+            fsSource = lines2.toArray(new String[lines2.size()]);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
