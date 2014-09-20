@@ -32,12 +32,28 @@ public class Node {
 	public Node addNode(Node node) {
 		this.nodes.add(node);
 		node.parent = this;
-		this.index = node.getParent().getNodes().indexOf(node);
-		if(index != 0)
-			node.previous = node.getParent().getNodes().get(index-1);
+		node.index = node.getParent().getNodes().indexOf(node);
+		if(node.index != 0) {
+			node.previous = node.getParent().getNodes().get(node.index-1);
+			node.setTransformation(node.previous.getTransformation().mult(vecmath.translationMatrix(1.5f, 0, 0)));
+		}
+		int columns = node.index / 5;
+		if (columns > 0) {
+			node.setTransformation(vecmath.translationMatrix(0, -(float) columns * 1.5f, 0));
+		}
+		int depth = 0;
+		Node check = this;
+		while (check.getClass() != Node.class) {
+			check = check.getParent();
+			depth++;
+		}
+		if (depth != 0) {
+			node.setTransformation(node.transformation.mult(vecmath.translationMatrix(0, 0, -2*depth)));
+		}
 		return node;
 		
 	}
+	
 
 	public int getIndex() {
 		return index;
@@ -84,10 +100,7 @@ public class Node {
 		List<Node> children = n.nodes;
 		for (int i = 0; i < children.size(); i++) {
 			Node currentNode = children.get(i);
-//			if (currentNode.nodes.size() == 0 ) {
-//				currentNode.display(n.transformation);
-//			}
-			if (currentNode.getClass() != Node.class) {
+			if (currentNode instanceof Cube) {
 				currentNode.display(n.transformation);
 			}
 			else display(transformation, currentNode);
