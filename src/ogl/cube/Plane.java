@@ -63,7 +63,7 @@ public class Plane extends Node {
 		// position and a vertex color.
 		glVertexAttribPointer(vertexAttribIdx, 3, false, 0, positionData);
 		glEnableVertexAttribArray(vertexAttribIdx);
-		glVertexAttribPointer(colorAttribIdx, 3, false, 0, colorData);
+		glVertexAttribPointer(colorAttribIdx, 4, false, 0, colorData);
 		glEnableVertexAttribArray(colorAttribIdx);
 		glVertexAttribPointer(textureAttribIdx, 2, false, 0, textureData);
 		glEnableVertexAttribArray(textureAttribIdx);
@@ -94,7 +94,7 @@ public class Plane extends Node {
 	}
 
 	// Make construction of colors easy on the eyes.
-	private Color col(float r, float g, float b) {
+	private Color col(float r, float g, float b, float a) {
 		return vecmath.color(r, g, b);
 	}
 	
@@ -104,7 +104,7 @@ public class Plane extends Node {
 
 	  // The colors of the cube vertices.
 	  private Color[] c = { 
-	      col(0, 0, 2.55f), 
+	      col(0, 0, 2.55f, 0.4f), 
 	  };
 	  
 	  private TexCoord[] t = {

@@ -87,7 +87,7 @@ public class Node {
 //			if (currentNode.nodes.size() == 0 ) {
 //				currentNode.display(n.transformation);
 //			}
-			if (currentNode instanceof Cube) {
+			if (currentNode.getClass() != Node.class) {
 				currentNode.display(n.transformation);
 			}
 			else display(transformation, currentNode);

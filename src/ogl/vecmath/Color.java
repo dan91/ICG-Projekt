@@ -28,12 +28,18 @@ public interface Color {
    * @return the b
    */
   public abstract float getB();
+  
+  /**
+   * @return the a
+   */
+  public abstract float getA();
 
   /**
    * Test this color for blackness.
    * 
    * @return True if black, else false.
    */
+  
   public abstract boolean isBlack();
 
   /**

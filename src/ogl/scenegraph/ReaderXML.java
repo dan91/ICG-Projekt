@@ -39,20 +39,35 @@ public class ReaderXML {
 		ogl.scenegraph.Node NCubes1 = new ogl.scenegraph.Node("Cubes1");
 
 		for (int temp = 0; temp < cubesLevel1.getLength(); temp++) {
+			Cube c = new Cube(defaultshader, "");
 
 			Node cube = cubesLevel1.item(temp);
 			if (cube.getNodeType() == Node.ELEMENT_NODE) {
-				System.out.println("\tCurrent Element :"
-						+ cube.getNodeName());
-				Cube c = new Cube(defaultshader, "");
-				c.setTransformation(vecmath.translationMatrix(vecmath
-						.vector(.75f * temp, 0f, 0f)));
+				System.out.println("\tCurrent Element in Level 1:" + cube.getNodeName());
+				c.setTransformation(vecmath.translationMatrix(vecmath.vector(
+						.75f * temp, 0f, 0f)));
 				NCubes1.addNode(c);
 			}
 
-			
-//			NCubes1.setTransformation(vecmath.translationMatrix(vecmath.vector(
-//					0f, -1.5f * temp, 0f)));
+			NodeList cubesLevel2 = cube.getChildNodes();
+			ogl.scenegraph.Node NCubes2 = new ogl.scenegraph.Node("Cubes2");
+
+			if (cubesLevel2.getLength() > 0) {
+				for (int temp2 = 0; temp2 < cubesLevel2.getLength(); temp2++) {
+					Node cube2 = cubesLevel2.item(temp2);
+					if (cube2.getNodeType() == Node.ELEMENT_NODE) {
+						System.out.println("\tCurrent Element in Level 2:"
+								+ cube2.getNodeName());
+						Cube c2 = new Cube(defaultshader, "");
+						c2.setTransformation(vecmath.translationMatrix(vecmath
+								.vector(.75f * temp2, 0f, 0f)));
+						//c.addNode(c2);
+					}
+				}
+			}
+
+			// NCubes1.setTransformation(vecmath.translationMatrix(vecmath.vector(
+			// 0f, -1.5f * temp, 0f)));
 			root.addNode(NCubes1);
 
 		}

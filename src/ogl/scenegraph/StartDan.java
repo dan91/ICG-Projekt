@@ -8,38 +8,25 @@ package ogl.scenegraph;
 import static ogl.vecmathimp.FactoryDefault.vecmath;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
 
-import java.awt.Font;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.nio.FloatBuffer;
-import java.util.prefs.BackingStoreException;
 
-import javax.swing.plaf.SliderUI;
-import javax.swing.text.Position;
 import javax.xml.parsers.ParserConfigurationException;
 
 import ogl.app.App;
 import ogl.app.Input;
-import ogl.app.MatrixUniform;
 import ogl.app.OpenGLApp;
-import ogl.app.Util;
 import ogl.cube.Cube;
 import ogl.cube.Plane;
 import ogl.cube.Shader;
-import ogl.triangle.Pyramid;
-import ogl.vecmath.Color;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
 
-import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
 import org.xml.sax.SAXException;
 
 // A simple but complete OpenGL 2.0 ES application.
@@ -88,7 +75,9 @@ public class StartDan implements App {
 
 		// Enable depth testing.
 		glEnable(GL11.GL_DEPTH_TEST);
-
+		GL11.glEnable( GL11.GL_BLEND );
+//
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		// New Shader object
 		defaultshader = new Shader();
 
@@ -137,13 +126,11 @@ public class StartDan implements App {
 		activeLevel = plane1.getNode(0);
 		activeObject = activeLevel.getNodes().get(countObject);
 
-		Node sceneX = new Node("Scene2");
-		Node levelX = new Node("LevelX");
+		
 		Cube cubeX = new Cube(defaultshader, "CubeX");
 		cubeX.setTransformation(vecmath.translationMatrix(vecmath.vector(0, 0,
 				-11)));
-		levelX.addNode(cubeX);
-		sceneX.addNode(levelX);
+
 		root.getNode(0).getNode(0).getNode(0).addNode(cubeX);
 
 		// Creates Camera
@@ -285,10 +272,10 @@ public class StartDan implements App {
 		} else if (zoomInProgress == true) {
 			zoomInProgress = false;
 			activePlane = activeObject.getNode(0);
-			//if (activeObject.getNodes().size() == 0) {
-				//activeObject = activePlane.getNode(0).getNode(0);
-			//} else
-			activeObject = activeObject.getNodes().get(0);
+			if (activeObject.getNodes().size() == 0) {
+				activeObject = activeObject.getNode(0);
+			} else
+			activeObject = activeObject.getNode(0);
 		}
 		if (zoomOutProgress == true && actionTime + 2.0 > timeElapsed) {
 			cam.moveOut(elapsed);
@@ -355,6 +342,7 @@ public class StartDan implements App {
 		defaultshader.setViewMatrixUniform(viewMatrix);
 
 		// Renders the Object with some magic
+		//root.getNodes().get(0).display(modelMatrix);
 		activePlane.display(modelMatrix);
 		if (activeObject.getNodes().size() != 0) {
 			activeObject.getNode(0).display(modelMatrix);

@@ -174,9 +174,17 @@ public interface Factory {
    *          green component
    * @param b
    *          blue component
+ * @param f 
    * 
    * @return The object.
    */
+  public abstract Color color(float r, float g, float b, float a);
+  /**
+   * Get the size (number of floats) of objects of type color.
+   * 
+   * @return The number of floats of color objects.
+   */
+  
   public abstract Color color(float r, float g, float b);
   /**
    * Get the size (number of floats) of objects of type color.
