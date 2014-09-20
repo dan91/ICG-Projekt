@@ -1,53 +1,62 @@
 package ogl.scenegraph;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
+import static ogl.vecmathimp.FactoryDefault.vecmath;
+
 import java.io.File;
+import java.io.IOException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import ogl.cube.Cube;
+import ogl.cube.Shader;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class ReaderXML {
-	
+
 	private Node scene;
 
-	public Node getScene(File xml) {
-		try {
+	public ogl.scenegraph.Node getScene(File xml, Shader defaultshader)
+			throws ParserConfigurationException, SAXException, IOException {
 
-			File fXmlFile = xml;
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(fXmlFile);
+		File fXmlFile = xml;
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		Document doc = dBuilder.parse(fXmlFile);
 
-			doc.getDocumentElement().normalize();
+		doc.getDocumentElement().normalize();
+		ogl.scenegraph.Node root = new ogl.scenegraph.Node("Scene");
 
-			NodeList nList = doc.getElementsByTagName("task");
+		Node scene = doc.getFirstChild();
 
-			for (int temp = 0; temp < nList.getLength(); temp++) {
+		// Get all cubes for Level 1
+		NodeList cubesLevel1 = scene.getChildNodes();
+		ogl.scenegraph.Node NCubes1 = new ogl.scenegraph.Node("Cubes1");
 
-				Node nNode = nList.item(temp);
+		for (int temp = 0; temp < cubesLevel1.getLength(); temp++) {
 
-				System.out.println("\nCurrent Element :" + nNode.getNodeName());
-
-				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
-					Element eElement = (Element) nNode;
-
-					System.out.println("Staff id : " + eElement.getAttribute("id"));
-					System.out.println("First Name : "
-							+ eElement.getElementsByTagName("firstname").item(0).getTextContent());
-					System.out.println("Last Name : "
-							+ eElement.getElementsByTagName("lastname").item(0).getTextContent());
-					System.out.println("Nick Name : "
-							+ eElement.getElementsByTagName("nickname").item(0).getTextContent());
-					System.out.println("Salary : " + eElement.getElementsByTagName("salary").item(0).getTextContent());
-
-				}
+			Node cube = cubesLevel1.item(temp);
+			if (cube.getNodeType() == Node.ELEMENT_NODE) {
+				System.out.println("\tCurrent Element :"
+						+ cube.getNodeName());
+				Cube c = new Cube(defaultshader, "");
+				c.setTransformation(vecmath.translationMatrix(vecmath
+						.vector(.75f * temp, 0f, 0f)));
+				NCubes1.addNode(c);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+
+			
+//			NCubes1.setTransformation(vecmath.translationMatrix(vecmath.vector(
+//					0f, -1.5f * temp, 0f)));
+			root.addNode(NCubes1);
+
 		}
+		return root;
 	}
 
 }

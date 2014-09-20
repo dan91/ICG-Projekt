@@ -14,12 +14,14 @@ import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.awt.Font;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.prefs.BackingStoreException;
 
 import javax.swing.plaf.SliderUI;
 import javax.swing.text.Position;
+import javax.xml.parsers.ParserConfigurationException;
 
 import ogl.app.App;
 import ogl.app.Input;
@@ -38,6 +40,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import org.xml.sax.SAXException;
 
 // A simple but complete OpenGL 2.0 ES application.
 public class StartDan implements App {
@@ -46,17 +49,17 @@ public class StartDan implements App {
 	static public void main(String[] args) {
 		new OpenGLApp("ToDo Liste", new StartDan()).start();
 	}
-	
-	//default shader object used to display the objects in the scenegraph
+
+	// default shader object used to display the objects in the scenegraph
 	private Shader defaultshader;
 
-	//root node of the scenegraph
+	// root node of the scenegraph
 	private Node root;
-	
-	//camera object
+
+	// camera object
 	private Camera cam;
-	
-	//pointers on active elements
+
+	// pointers on active elements
 	private Node activePlane;
 	private Node activeLevel;
 	private Node activeObject;
@@ -64,16 +67,16 @@ public class StartDan implements App {
 	private int objectsPerLevel;
 	private int levels;
 	private int countLevel;
-	
-	//animationshelper
+
+	// animationshelper
 	private boolean changeInProgress = false;
 	private boolean zoomInProgress = false;
 	private boolean zoomOutProgress = false;
 
-	//timer
+	// timer
 	private float timeElapsed = 0;
 	private float actionTime = 0;
-	
+
 	Plane background;
 
 	// Initialize the rotation angle of the cube.
@@ -93,50 +96,71 @@ public class StartDan implements App {
 		background = new Plane(defaultshader, "Background");
 
 		
-		root = new Node("Root");
-	
-		root.addNode(new Node("Plane1"));
-		//Draws level
-		for(float i = 0; i < 4; i++) {
-			//Draws objects
-			Node level = new Node("Level "+i);
-			for(float j = 0; j < 5; j++) {
-				Cube cube = new Cube(defaultshader, "Cube "+j);
-				cube.setTransformation(vecmath.translationMatrix(
-						vecmath.vector(1.5f*j, 0f, 0f)));
-				level.addNode(cube);
-			}
-			level.setTransformation(vecmath.translationMatrix(
-					vecmath.vector(0f, -1.5f*i, 0f)));
-			root.getNodes().get(0).addNode(level);
+		ReaderXML reader = new ReaderXML();
+		Node scene = null;
+		try {
+			scene = reader.getScene(new File("res/scene.xml"), defaultshader);
+			System.out.println(scene.toString());
+
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		countObject = 0;
-		activeLevel = root.getNodes().get(0).getNodes().get(0);
-		activeObject = activeLevel.getNodes().get(countObject);
 		
+		
+		root = new Node("Root");
+
+		Node plane1 = root.addNode(scene);
+		//plane1.addNode(scene.getNodes());
+//		// Draws level
+//		for (int i = 0; i < 4; i++) {
+//			// Draws objects
+//			Node level = new Node("Level " + i);
+//			for (int j = 0; j < 5; j++) {
+//				Cube cube = new Cube(defaultshader, "Cube " + j);
+//				cube.setTransformation(vecmath.translationMatrix(vecmath
+//						.vector(1.5f * j, 0f, 0f)));
+//				level.addNode(cube);
+//			}
+//			level.setTransformation(vecmath.translationMatrix(vecmath.vector(
+//					0f, -1.5f * i, 0f)));
+//			root.getNodes().get(0).addNode(level);
+//		}
+		countObject = 0;
+		//activeLevel = root.getNodes().get(0).getNodes().get(0);
+		activeLevel = plane1.getNode(0);
+		activeObject = activeLevel.getNodes().get(countObject);
+
 		Node sceneX = new Node("Scene2");
 		Node levelX = new Node("LevelX");
 		Cube cubeX = new Cube(defaultshader, "CubeX");
-		levelX.setTransformation(vecmath.translationMatrix(vecmath.vector(0, 0, -11)));
+		cubeX.setTransformation(vecmath.translationMatrix(vecmath.vector(0, 0,
+				-11)));
 		levelX.addNode(cubeX);
 		sceneX.addNode(levelX);
-		root.getNode(0).getNode(0).getNode(0).addNode(sceneX);
-		
-		//Creates Camera
+		root.getNode(0).getNode(0).getNode(0).addNode(cubeX);
+
+		// Creates Camera
 		cam = new Camera();
-		
+
 		activePlane = root.getNode(0);
 		levels = activePlane.getNodes().size();
-		objectsPerLevel = activeLevel.getNodes().size();
 	}
-	
+
 	// Should be used for animations
 	public void simulate(float elapsed, Input input) {
-		
+		objectsPerLevel = activeLevel.getNodes().size();
+
 		timeElapsed += elapsed;
-//		System.out.println(timeElapsed);
-		
-		//Animation of the camera
+		// System.out.println(timeElapsed);
+
+		// Animation of the camera
 		if (input.isKeyDown(Keyboard.KEY_W)) {
 			cam.moveUp(elapsed);
 		}
@@ -155,119 +179,129 @@ public class StartDan implements App {
 		if (input.isKeyDown(Keyboard.KEY_Y)) {
 			cam.moveOut(elapsed);
 		}
-		
-		//Animation of the Objects
+
+		// Animation of the Objects
 		if (input.isKeyDown(Keyboard.KEY_UP)) {
-			if(changeInProgress == true) {
-				//stop rotation of active object
-				activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), 0).mult(vecmath.translationMatrix(activeObject.getTransformation().getPosition())));
+			if (changeInProgress == true) {
+				// stop rotation of active object
+				activeObject.setTransformation(vecmath.rotationMatrix(
+						vecmath.xAxis(), 0).mult(
+						vecmath.translationMatrix(activeObject
+								.getTransformation().getPosition())));
 				// increment count if count smaller amount of objects per level
-				if(countLevel > 0)
+				if (countLevel > 0)
 					countLevel--;
-				else if(countLevel == 0)
-					countLevel = levels-1;
+				else if (countLevel == 0)
+					countLevel = levels - 1;
 				changeInProgress = false;
 
-				// set active object to 
+				// set active object to
 				activeLevel = root.getNodes().get(0).getNodes().get(countLevel);
-				activeObject = root.getNodes().get(0).getNodes().get(countLevel).getNodes().get(countObject);
-				}
-		}
-		else if (input.isKeyDown(Keyboard.KEY_DOWN)) {
-			if(changeInProgress == true) {
-				//stop rotation of active object
-				activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), 0).mult(vecmath.translationMatrix(activeObject.getTransformation().getPosition())));
+				activeObject = root.getNodes().get(0).getNodes()
+						.get(countLevel).getNodes().get(countObject);
+			}
+		} else if (input.isKeyDown(Keyboard.KEY_DOWN)) {
+			if (changeInProgress == true) {
+				// stop rotation of active object
+				activeObject.setTransformation(vecmath.rotationMatrix(
+						vecmath.xAxis(), 0).mult(
+						vecmath.translationMatrix(activeObject
+								.getTransformation().getPosition())));
 				// increment count if count smaller amount of objects per level
-				if(countLevel < levels-1)
+				if (countLevel < levels - 1)
 					countLevel++;
-				else if(countLevel == levels-1)
+				else if (countLevel == levels - 1)
 					countLevel = 0;
 				changeInProgress = false;
 
-				// set active object to 
+				// set active object to
 				activeLevel = root.getNodes().get(0).getNodes().get(countLevel);
-				activeObject = root.getNodes().get(0).getNodes().get(countLevel).getNodes().get(countObject);
-				}
-		}
-		else if (input.isKeyDown(Keyboard.KEY_RIGHT)) {	
-			if(changeInProgress == true) {
-			//stop rotation of active object
-			activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), 0).mult(vecmath.translationMatrix(activeObject.getTransformation().getPosition())));
-			// increment count if count smaller amount of objects per level
-			if(countObject < objectsPerLevel-1)
-				countObject++;
-			else if(countObject == objectsPerLevel-1)
-				countObject = 0;
-			changeInProgress = false;
-
-			// set active object to 
-			activeObject = activeLevel.getNodes().get(countObject);
+				activeObject = root.getNodes().get(0).getNodes()
+						.get(countLevel).getNodes().get(countObject);
 			}
-			
-		}
-		else if (input.isKeyDown(Keyboard.KEY_LEFT)) {	
-			if(changeInProgress == true) {
-			//stop rotation of active object
-			activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), 0).mult(vecmath.translationMatrix(activeObject.getTransformation().getPosition())));
-			// increment count if count smaller amount of objects per level
-			if(countObject > 0)
-				countObject--;
-			else if(countObject == 0)
-				countObject = objectsPerLevel-1;
-			changeInProgress = false;
+		} else if (input.isKeyDown(Keyboard.KEY_RIGHT)) {
+			if (changeInProgress == true) {
+				// stop rotation of active object
+				activeObject.setTransformation(vecmath.rotationMatrix(
+						vecmath.xAxis(), 0).mult(
+						vecmath.translationMatrix(activeObject
+								.getTransformation().getPosition())));
+				// increment count if count smaller amount of objects per level
+				if (countObject < objectsPerLevel - 1)
+					countObject++;
+				else if (countObject == objectsPerLevel - 1)
+					countObject = 0;
+				changeInProgress = false;
 
-			// set active object to 
-			activeObject = activeLevel.getNodes().get(countObject);
+				// set active object to
+				activeObject = activeLevel.getNodes().get(countObject);
 			}
-			
-		}
-		else if (input.isKeyDown(Keyboard.KEY_RETURN)) {	
-			if(changeInProgress == true) {	
+
+		} else if (input.isKeyDown(Keyboard.KEY_LEFT)) {
+			if (changeInProgress == true) {
+				// stop rotation of active object
+				activeObject.setTransformation(vecmath.rotationMatrix(
+						vecmath.xAxis(), 0).mult(
+						vecmath.translationMatrix(activeObject
+								.getTransformation().getPosition())));
+				// increment count if count smaller amount of objects per level
+				if (countObject > 0)
+					countObject--;
+				else if (countObject == 0)
+					countObject = objectsPerLevel - 1;
+				changeInProgress = false;
+
+				// set active object to
+				activeObject = activeLevel.getNodes().get(countObject);
+			}
+
+		} else if (input.isKeyDown(Keyboard.KEY_RETURN)) {
+			if (changeInProgress == true) {
 				if (activeObject.getNodes().size() != 0) {
 					zoomInProgress = true;
 					actionTime = timeElapsed;
 				}
 			}
-			
-		}
-		else if (input.isKeyDown(Keyboard.KEY_BACK)) {
-			if(changeInProgress == true) {
+
+		} else if (input.isKeyDown(Keyboard.KEY_BACK)) {
+			if (changeInProgress == true) {
 				if (activePlane.getParent() != root) {
 					zoomOutProgress = true;
 					actionTime = timeElapsed;
 				}
 			}
-		}
-		else if (input.isKeyDown(Keyboard.KEY_P)) {	
-			if(changeInProgress == true) {
+		} else if (input.isKeyDown(Keyboard.KEY_P)) {
+			if (changeInProgress == true) {
 				((Cube) activeObject).setTexture();
 			}
 		}
-		
+
 		else {
 			changeInProgress = true;
 		}
-		
-		if (zoomInProgress == true && actionTime + 2.0  > timeElapsed) {
+
+		if (zoomInProgress == true && actionTime + 2.0 > timeElapsed) {
 			cam.moveIn(elapsed);
-		}
-		else if (zoomInProgress == true) {
+		} else if (zoomInProgress == true) {
 			zoomInProgress = false;
 			activePlane = activeObject.getNode(0);
-			activeObject = activePlane.getNode(0).getNode(0);
+			//if (activeObject.getNodes().size() == 0) {
+				//activeObject = activePlane.getNode(0).getNode(0);
+			//} else
+			activeObject = activeObject.getNodes().get(0);
 		}
-		if (zoomOutProgress == true && actionTime + 2.0  > timeElapsed) {
+		if (zoomOutProgress == true && actionTime + 2.0 > timeElapsed) {
 			cam.moveOut(elapsed);
-		}
-		else if (zoomOutProgress == true) {
+		} else if (zoomOutProgress == true) {
 			zoomOutProgress = false;
 			activeObject = activePlane.getParent();
 			activePlane = activePlane.getParent().getParent().getParent();
 		}
-		
-		
-		activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), angle).mult(vecmath.translationMatrix(activeObject.getTransformation().getPosition())));
-		
+
+		activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(),
+				angle).mult(
+				vecmath.translationMatrix(activeObject.getTransformation()
+						.getPosition())));
 		angle += 90 * elapsed;
 
 	}
@@ -304,15 +338,16 @@ public class StartDan implements App {
 
 		// The inverse camera transformation. World space to camera space.
 		Matrix viewMatrix = cam.matrix();
-		
 
 		// The modeling transformation. Object space to world space.
 		Matrix modelMatrix = vecmath.translationMatrix(vecmath.vector(0, 0, 0));
 
 		// Sets Transformations
-		//activeObject.setTransformation(vecmath.translationMatrix(vecmath.vector(-2f, -1.5f, 4f)));
+		// activeObject.setTransformation(vecmath.translationMatrix(vecmath.vector(-2f,
+		// -1.5f, 4f)));
 
-		root.getNodes().get(0).getNodes().get(0).setTransformation(vecmath.translationMatrix(move));
+		root.getNodes().get(0).getNodes().get(0)
+				.setTransformation(vecmath.translationMatrix(move));
 
 		// Shader
 		defaultshader.setModelMatrixUniform(modelMatrix);
@@ -324,7 +359,8 @@ public class StartDan implements App {
 		if (activeObject.getNodes().size() != 0) {
 			activeObject.getNode(0).display(modelMatrix);
 		}
-        background.display(vecmath.matrix(vecmath.vector(1, 0, 0), vecmath.vector(0, 1, 0), vecmath.vector(0, 0, 1)));
+		background.display(vecmath.matrix(vecmath.vector(1, 0, 0),
+				vecmath.vector(0, 1, 0), vecmath.vector(0, 0, 1)));
 	}
 
 }

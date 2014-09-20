@@ -29,12 +29,13 @@ public class Node {
 	}
 
 	// Error: parent Node is not correctly set
-	public void addNode(Node node) {
+	public Node addNode(Node node) {
 		this.nodes.add(node);
 		node.parent = this;
 		this.index = node.getParent().getNodes().indexOf(node);
 		if(index != 0)
 			node.previous = node.getParent().getNodes().get(index-1);
+		return node;
 		
 	}
 
