@@ -263,6 +263,7 @@ public class StartDan implements App {
 		Matrix modelMatrix = vecmath.translationMatrix(vecmath.vector(0, 0, 0));
 		
 		// The inverse camera transformation. World space to camera space.
+//		cam.setTransformation(vecmath.translationMatrix(2, 0, 0));
 		cam.display(modelMatrix);
 		Matrix viewMatrix = cam.matrix();
 

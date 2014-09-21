@@ -28,7 +28,7 @@ public class Camera extends Node{
 	public void display(Matrix m){
 		eye = vecmath.vector(eyeX, eyeY, eyeZ);
 		center = vecmath.vector(centerX, centerY, centerZ);
-		viewMatrix = vecmath.lookatMatrix(eye, center, up).mult(m);
+		viewMatrix = vecmath.lookatMatrix(eye, center, up).mult(m).mult(getTransformation());
 	}
 	
 	public Matrix matrix(){
