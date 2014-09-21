@@ -77,11 +77,6 @@ public class Plane extends Node {
 	public static int colorAttribIdx = 1;
 	public static int textureAttribIdx = 2;
 
-	// Width, depth and height of the cube divided by 2.
-	float w2 = 0.5f;
-	float h2 = 0.5f;
-	float d2 = 0.5f;
-
 	// Make construction of vertices easy on the eyes.
 	private Vertex v(Vector p, Color c, TexCoord t) {
 		return new Vertex(p, c, t);
@@ -94,7 +89,7 @@ public class Plane extends Node {
 	}
 
 	// Make construction of colors easy on the eyes.
-	private Color col(float r, float g, float b, float a) {
+	private Color col(float r, float g, float b) {
 		return vecmath.color(r, g, b);
 	}
 	
@@ -104,7 +99,7 @@ public class Plane extends Node {
 
 	  // The colors of the cube vertices.
 	  private Color[] c = { 
-	      col(0, 0, 2.55f, 0.4f), 
+	      col(0, 0, 2.55f), 
 	  };
 	  
 	  private TexCoord[] t = {

@@ -105,7 +105,7 @@ public class StartDan implements App {
 		scene.addNode(new Cube(defaultshader, "Cube1"));
 		scene.addNode(new Cube(defaultshader, "Cube2"));
 		scene.addNode(new Cube(defaultshader, "Cube3"));
-		scene.getNode(0).getNode(2).addNode(new Cube(defaultshader, "Cube3_1"));
+		scene.getNode(0).getNode(0).getNode(2).addNode(new Cube(defaultshader, "Cube3_1"));
 		scene.addNode(new Cube(defaultshader, "Cube4"));
 		scene.addNode(new Cube(defaultshader, "Cube5"));
 		scene.addNode(new Cube(defaultshader, "Cube6"));
@@ -113,9 +113,9 @@ public class StartDan implements App {
 		
 		//Set values for the selection of objects
 		countObject = 0;
-		activeObject = root.getNode(0).getNode(0).getNode(0);
+		activeObject = root.getNode(0).getNode(0).getNode(0).getNode(0);
 		activePlane = root.getNode(0).getNode(0);
-		objectsPerLevel = scene.getNode(0).getNodes().size();
+		objectsPerLevel = scene.getNode(0).getNode(0).getNodes().size();
 		
 		// Creates Camera
 		cam = new Camera("cam");
@@ -210,8 +210,8 @@ public class StartDan implements App {
 		} else if (zoomInProgress == true) {
 			zoomInProgress = false;
 			activePlane = activeObject.getNode(0);
-			activeObject = activePlane.getNode(0);
-			objectsPerLevel = activePlane.getNodes().size();
+			activeObject = activePlane.getNode(0).getNode(0);
+			objectsPerLevel = activePlane.getNode(0).getNodes().size();
 			countObject = 0;
 		}
 		
@@ -290,7 +290,7 @@ public class StartDan implements App {
 //    			activeObject.getNode(i).display(modelMatrix);
 //    		}
 //        }
-		//background.display(modelMatrix);
+//		background.display(modelMatrix);
 	}
 
 }

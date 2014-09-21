@@ -5,6 +5,8 @@ import java.util.List;
 
 import static ogl.vecmathimp.FactoryDefault.vecmath;
 import ogl.cube.Cube;
+import ogl.cube.Plane;
+import ogl.cube.Shader;
 import ogl.pyramide.Pyramide;
 import ogl.triangle.Pyramid;
 import ogl.vecmath.*;
@@ -34,7 +36,7 @@ public class Node {
 	public Node addNode(Node node) {
 //		this.nodes.add(node);
 		if (this.getNodes().size() != 0) {
-			node.parent = this.getNode(0);
+			node.parent = this.getNode(0).getNode(0);
 			node.index = node.getParent().getNodes().size();
 		}
 		else{
@@ -43,23 +45,31 @@ public class Node {
 		if (node.getClass() == Cube.class || node.getClass() == Pyramid.class) {
 			if (node.index == 0){
 				Node plane = new Node("Plane");
+				Node tasks = new Node("Tasks");
 				plane.index = 0;
 				plane.parent = this;
-				node.parent = plane;
+				tasks.index = 0;
+				tasks.parent = plane;
+				node.parent = tasks;
 				int depth = 0;
 				Node check = node.getParent();
 				while (check.getName() != "Scene") {
 					check = check.getParent();
 					depth++;
 				}
-				if (depth != 0) {
-					plane.setTransformation(node.transformation.mult(vecmath.translationMatrix(0, 0, -1 * depth)));
+				if (depth > 2) {
+					plane.setTransformation(node.transformation.mult(vecmath.translationMatrix(0, 0, -0.5f * depth)));
 				}
-				plane.nodes.add(node);
+				Plane background = new Plane(new Shader(), "Backgound");
+				background.setTransformation(vecmath.translationMatrix(0, 0, -2));
+				background.setParent(plane);
+				tasks.nodes.add(node);
+				plane.nodes.add(tasks);
+				plane.nodes.add(background);
 				this.nodes.add(plane);
 			}
 			else {
-				this.getNode(0).simpleAdd(node);
+				this.getNode(0).getNode(0).simpleAdd(node);
 				node.previous = node.getParent().getNodes().get(node.index - 1);
 				node.setTransformation(node.previous.getTransformation().mult(vecmath.translationMatrix(1.5f, 0, 0)));
 				int columns = node.index / 5;
@@ -74,6 +84,10 @@ public class Node {
 		return node;
 	}
 	
+	public void setParent(Node parent) {
+		this.parent = parent;
+	}
+
 	public Node simpleAdd(Node node){
 		nodes.add(node);
 		return node;
@@ -124,12 +138,12 @@ public class Node {
 
 	public void display(Matrix m, Node n) {
 		// do something with the current node instead of System.out
-		transformation = m.mult(transformation);
+		n.transformation = transformation.mult(m);
 
 		List<Node> children = n.nodes;
 		for (int i = 0; i < children.size(); i++) {
 			Node currentNode = children.get(i);
-			if (currentNode instanceof Cube) {
+			if (currentNode.getClass() != Node.class) {
 				currentNode.display(n.transformation);
 			} else
 				display(transformation, currentNode);

@@ -23,6 +23,7 @@ public class Cube extends Node {
 
 	Shader defaultshader;
 	
+	
 	private FloatBuffer positionData;
 	private FloatBuffer colorData;
 	private FloatBuffer textureData;
@@ -55,6 +56,11 @@ public class Cube extends Node {
 		tex = new Texture(new File("res/Test1.PNG"));
 		
 	}
+	
+	public Shader getDefaultshader() {
+		return defaultshader;
+	}
+
 	
 	@Override
 	public void display(Matrix m) { 
