@@ -3,8 +3,12 @@ package ogl.scenegraph;
 import static ogl.vecmathimp.FactoryDefault.vecmath;
 import ogl.vecmath.*;
 
-public class Camera {
+public class Camera extends Node{
 	
+	public Camera(String name) {
+		super(name);
+	}
+
 	private float speed = 5f;
 	
 	private float eyeX = 3f;
@@ -21,10 +25,13 @@ public class Camera {
 	
 	private Matrix viewMatrix = vecmath.lookatMatrix(eye, center, up);
 
-	public Matrix matrix(){
+	public void display(Matrix m){
 		eye = vecmath.vector(eyeX, eyeY, eyeZ);
 		center = vecmath.vector(centerX, centerY, centerZ);
-		viewMatrix = vecmath.lookatMatrix(eye, center, up);
+		viewMatrix = vecmath.lookatMatrix(eye, center, up).mult(m);
+	}
+	
+	public Matrix matrix(){
 		return viewMatrix;
 	}
 	

@@ -5,6 +5,8 @@ import java.util.List;
 
 import static ogl.vecmathimp.FactoryDefault.vecmath;
 import ogl.cube.Cube;
+import ogl.pyramide.Pyramide;
+import ogl.triangle.Pyramid;
 import ogl.vecmath.*;
 
 public class Node {
@@ -25,35 +27,62 @@ public class Node {
 		setTransformation(vecmath.identityMatrix());
 		this.nodes = new ArrayList<Node>();
 		this.name = name;
-		
+
 	}
 
 	// Error: parent Node is not correctly set
 	public Node addNode(Node node) {
-		this.nodes.add(node);
-		node.parent = this;
-		node.index = node.getParent().getNodes().indexOf(node);
-		if(node.index != 0) {
-			node.previous = node.getParent().getNodes().get(node.index-1);
-			node.setTransformation(node.previous.getTransformation().mult(vecmath.translationMatrix(1.5f, 0, 0)));
+//		this.nodes.add(node);
+		if (this.getNodes().size() != 0) {
+			node.parent = this.getNode(0);
+			node.index = node.getParent().getNodes().size();
 		}
-		int columns = node.index / 5;
-		if (columns > 0) {
-			node.setTransformation(vecmath.translationMatrix(0, -(float) columns * 1.5f, 0));
+		else{
+			node.index = 0;
 		}
-		int depth = 0;
-		Node check = this;
-		while (check.getClass() != Node.class) {
-			check = check.getParent();
-			depth++;
+		if (node.getClass() == Cube.class || node.getClass() == Pyramid.class) {
+			if (node.index == 0){
+				Node plane = new Node("Plane");
+				plane.index = 0;
+				plane.parent = this;
+				node.parent = plane;
+				int depth = 0;
+				Node check = node.getParent();
+				while (check.getName() != "Scene") {
+					check = check.getParent();
+					depth++;
+				}
+				if (depth != 0) {
+					plane.setTransformation(node.transformation.mult(vecmath.translationMatrix(0, 0, -1 * depth)));
+				}
+				plane.nodes.add(node);
+				this.nodes.add(plane);
+			}
+			else {
+				this.getNode(0).simpleAdd(node);
+				node.previous = node.getParent().getNodes().get(node.index - 1);
+				node.setTransformation(node.previous.getTransformation().mult(vecmath.translationMatrix(1.5f, 0, 0)));
+				int columns = node.index / 5;
+				if (columns > 0) {
+					node.setTransformation(vecmath.translationMatrix(0, -(float) columns * 1.5f, 0));
+				}
+			}
 		}
-		if (depth != 0) {
-			node.setTransformation(node.transformation.mult(vecmath.translationMatrix(0, 0, -2*depth)));
+		else{
+			this.nodes.add(node);
 		}
 		return node;
-		
 	}
 	
+	public Node simpleAdd(Node node){
+		nodes.add(node);
+		return node;
+	}
+
+	
+	public String getName() {
+		return name;
+	}
 
 	public int getIndex() {
 		return index;
@@ -78,8 +107,8 @@ public class Node {
 	public List<Node> getNodes() {
 		return this.nodes;
 	}
-	
-	public Node getNode(int index){
+
+	public Node getNode(int index) {
 		return nodes.get(index);
 	}
 
@@ -102,8 +131,8 @@ public class Node {
 			Node currentNode = children.get(i);
 			if (currentNode instanceof Cube) {
 				currentNode.display(n.transformation);
-			}
-			else display(transformation, currentNode);
+			} else
+				display(transformation, currentNode);
 		}
 	}
 
@@ -117,8 +146,7 @@ public class Node {
 
 			Node childNode = list.get(i);
 
-			output += "Found Node: " + childNode.name
-			+ " - with value: " + childNode.name + "\n";
+			output += "Found Node: " + childNode.name + " - with value: " + childNode.name + "\n";
 			visitRecursively(childNode);
 
 		}

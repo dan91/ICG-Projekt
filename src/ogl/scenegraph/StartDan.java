@@ -48,6 +48,7 @@ public class StartDan implements App {
 
 	// pointers on active elements
 	private Node activeObject;
+	private Node activePlane;
 	private int countObject;
 	private int objectsPerLevel;
 
@@ -104,7 +105,7 @@ public class StartDan implements App {
 		scene.addNode(new Cube(defaultshader, "Cube1"));
 		scene.addNode(new Cube(defaultshader, "Cube2"));
 		scene.addNode(new Cube(defaultshader, "Cube3"));
-		scene.getNode(2).addNode(new Cube(defaultshader, "Cube3_1"));
+		scene.getNode(0).getNode(2).addNode(new Cube(defaultshader, "Cube3_1"));
 		scene.addNode(new Cube(defaultshader, "Cube4"));
 		scene.addNode(new Cube(defaultshader, "Cube5"));
 		scene.addNode(new Cube(defaultshader, "Cube6"));
@@ -112,11 +113,12 @@ public class StartDan implements App {
 		
 		//Set values for the selection of objects
 		countObject = 0;
-		activeObject = root.getNode(0).getNode(0);
-		objectsPerLevel = scene.getNodes().size();
+		activeObject = root.getNode(0).getNode(0).getNode(0);
+		activePlane = root.getNode(0).getNode(0);
+		objectsPerLevel = scene.getNode(0).getNodes().size();
 		
 		// Creates Camera
-		cam = new Camera();
+		cam = new Camera("cam");
 
 	}
 
@@ -207,7 +209,10 @@ public class StartDan implements App {
 			cam.moveIn(elapsed);
 		} else if (zoomInProgress == true) {
 			zoomInProgress = false;
-			activeObject = activeObject.getNode(0);
+			activePlane = activeObject.getNode(0);
+			activeObject = activePlane.getNode(0);
+			objectsPerLevel = activePlane.getNodes().size();
+			countObject = 0;
 		}
 		
 		//Zoom out
@@ -215,7 +220,10 @@ public class StartDan implements App {
 			cam.moveOut(elapsed);
 		} else if (zoomOutProgress == true) {
 			zoomOutProgress = false;
-			activeObject = activeObject.getParent();
+			activeObject = activePlane.getParent();
+			activePlane = activeObject.getParent();
+			objectsPerLevel = activePlane.getNodes().size();
+			countObject = activeObject.getIndex();
 		}
 
 		activeObject.setTransformation(activeObject.getTransformation().mult(vecmath.rotationMatrix(vecmath.xAxis(), angle)));
@@ -251,11 +259,12 @@ public class StartDan implements App {
 		// The perspective projection. Camera space to NDC.
 		Matrix projectionMatrix = vecmath.perspectiveMatrix(60f, aspect, 0.1f, 100f);
 
-		// The inverse camera transformation. World space to camera space.
-		Matrix viewMatrix = cam.matrix();
-
 		// The modeling transformation. Object space to world space.
 		Matrix modelMatrix = vecmath.translationMatrix(vecmath.vector(0, 0, 0));
+		
+		// The inverse camera transformation. World space to camera space.
+		cam.display(modelMatrix);
+		Matrix viewMatrix = cam.matrix();
 
 		// Sets Transformations
 		// activeObject.setTransformation(vecmath.translationMatrix(vecmath.vector(-2f,
@@ -268,15 +277,18 @@ public class StartDan implements App {
 
 		// Renders the Object with some magic
 		// root.getNodes().get(0).display(modelMatrix);
-//		root.display(modelMatrix);
-		for (int i = 0; i < activeObject.getParent().getNodes().size(); i++) {
-			activeObject.getParent().getNode(i).display(modelMatrix);
+		activePlane.display(modelMatrix);
+		if (activeObject.getNodes().size() != 0) {
+			activeObject.getNode(0).display(modelMatrix);
 		}
-        if (activeObject.getNodes().size() != 0) {
-        	for (int i = 0; i < activeObject.getNodes().size(); i++) {
-    			activeObject.getNode(i).display(modelMatrix);
-    		}
-        }
+//		for (int i = 0; i < activeObject.getParent().getNodes().size(); i++) {
+//			activeObject.getParent().getNode(i).display(modelMatrix);
+//		}
+//        if (activeObject.getNodes().size() != 0) {
+//        	for (int i = 0; i < activeObject.getNodes().size(); i++) {
+//    			activeObject.getNode(i).display(modelMatrix);
+//    		}
+//        }
 		//background.display(modelMatrix);
 	}
 
