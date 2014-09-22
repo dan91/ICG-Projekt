@@ -12,12 +12,12 @@ public class Camera extends Node{
 	private float speed = 5f;
 	
 	private float eyeX = 3f;
-	private float eyeY = 0f;
-	private float eyeZ = 7f;
+	private float eyeY = 2f;
+	private float eyeZ = 4.9f;
 	
 	private float centerX = 3f;
 	private float centerY = 0f;
-	private float centerZ = 0f;
+	private float centerZ = -1.1f;
 
 	private Vector eye = vecmath.vector(eyeX, eyeY, eyeZ);
 	private Vector center = vecmath.vector(centerX, centerY, centerZ);
@@ -73,6 +73,18 @@ public class Camera extends Node{
 	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
+
+	public float getEyeZ() {
+		return eyeZ;
+	}
+
+	public void setEyeZ(float eyeZ) {
+		this.eyeZ = eyeZ;
+	}
+	
+	
+	
+	
 	
 	
 }

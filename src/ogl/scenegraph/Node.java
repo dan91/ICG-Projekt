@@ -63,8 +63,9 @@ public class Node {
 					check = check.getParent();
 					depth++;
 				}
-				if (depth > 2) {
-					plane.setTransformation(node.transformation.mult(vecmath.translationMatrix(0, 0, -1f * depth)));
+				depth = depth - 2;
+				if (depth > 0) {
+					plane.setTransformation(vecmath.translationMatrix(0f, 0f, -1f * depth));
 				}
 				Plane background = new Plane(new Shader(), "Backgound");
 				background.setTransformation(vecmath.translationMatrix(0, 0, -4f));

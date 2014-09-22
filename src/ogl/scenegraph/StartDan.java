@@ -13,6 +13,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.acl.LastOwnerException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -59,8 +60,7 @@ public class StartDan implements App {
 	private boolean zoomOutProgress = false;
 
 	// timer
-	private float timeElapsed = 0;
-	private float actionTime = 0;
+	private float camLastPosi = 0;
 
 	Plane background;
 
@@ -84,6 +84,7 @@ public class StartDan implements App {
 		// Creates 3D-Objects
 		background = new Plane(defaultshader, "Background");
 		background2 = new Plane(defaultshader, "Background");
+		background3 = new Plane(defaultshader, "Background");
 
 		// //Imports the structure of the scene via XML
 		ReaderXML reader = new ReaderXML();
@@ -137,7 +138,6 @@ public class StartDan implements App {
 	// Should be used for animations
 	public void simulate(float elapsed, Input input) {
 
-		timeElapsed += elapsed;
 		// System.out.println(timeElapsed);
 
 		// Animation of the camera
@@ -198,16 +198,18 @@ public class StartDan implements App {
 			if (changeInProgress == true) {
 				if (activeObject.getNodes().size() != 0) {
 					zoomInProgress = true;
-					actionTime = timeElapsed;
+					camLastPosi = cam.getEyeZ();
 				}
+				changeInProgress = false;
 			}
 
 		} else if (input.isKeyDown(Keyboard.KEY_BACK)) {
 			if (changeInProgress == true) {
 				if (activeObject.getParent().getParent() != root) {
 					zoomOutProgress = true;
-					actionTime = timeElapsed;
+					camLastPosi = cam.getEyeZ();
 				}
+				changeInProgress = false;
 			}
 		} else if (input.isKeyDown(Keyboard.KEY_P)) {
 			if (changeInProgress == true) {
@@ -224,9 +226,11 @@ public class StartDan implements App {
 		}
 
 		// Zoom in
-		if (zoomInProgress == true && actionTime + 0.5 > timeElapsed) {
+		if (zoomInProgress == true && camLastPosi-6 < cam.getEyeZ()) {
+			System.out.println(cam.getTransformation().getPosition().z());
 			cam.moveIn(elapsed);
 		} else if (zoomInProgress == true) {
+			System.out.println(cam.getEyeZ());
 			zoomInProgress = false;
 			activePlane = activeObject.getNode(0);
 			activeObject = activePlane.getNode(0).getNode(0);
@@ -235,9 +239,10 @@ public class StartDan implements App {
 		}
 
 		// Zoom out
-		if (zoomOutProgress == true && actionTime + 0.5 > timeElapsed) {
+		if (zoomOutProgress == true && camLastPosi+6 > cam.getEyeZ()) {
 			cam.moveOut(elapsed);
 		} else if (zoomOutProgress == true) {
+			System.out.println(cam.getEyeZ());
 			zoomOutProgress = false;
 			activeObject = activePlane.getParent();
 			activePlane = activeObject.getParent().getParent();
@@ -259,6 +264,8 @@ public class StartDan implements App {
 	Vector rotate = vecmath.vector(0, 0, 0);
 
 	private Plane background2;
+
+	private Node background3;
 
 	/*
 	 * (non-Javadoc)
@@ -310,17 +317,18 @@ public class StartDan implements App {
 		// {
 		// activeObject.getParent().getNode(i).display(modelMatrix);
 		// }
-		// if (activeObject.getNodes().size() != 0) {
-		// for (int i = 0; i < activeObject.getNodes().size(); i++) {
+		// if (activeObject.getNodes().size() != 0) {y
 		// activeObject.getNode(i).display(modelMatrix);
 		// }
 		// }
-		loader.render();
+		//loader.render();
 
-		background.setTransformation(vecmath.translationMatrix(0, 0, -2f));
+		background.setTransformation(vecmath.translationMatrix(0, 0, -7f));
 		background.display(modelMatrix);
-		background2.setTransformation(vecmath.translationMatrix(0, 0, -14f));
+		background2.setTransformation(vecmath.translationMatrix(0, 0, -13f));
 		background2.display(modelMatrix);
+		background3.setTransformation(vecmath.translationMatrix(0, 0, -1f));
+		background3.display(modelMatrix);
 	}
 
 }
