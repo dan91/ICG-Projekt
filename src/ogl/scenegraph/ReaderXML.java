@@ -30,14 +30,14 @@ public class ReaderXML {
 		Document doc = dBuilder.parse(fXmlFile);
 
 		doc.getDocumentElement().normalize();
-		ogl.scenegraph.Node root = new ogl.scenegraph.Node("Scene");
+		ogl.scenegraph.Node root = new ogl.scenegraph.Node("root");
 
 		Node scene = doc.getFirstChild();
 
 		// Get all cubes for Level 1
 		NodeList cubesLevel1 = scene.getChildNodes();
-		ogl.scenegraph.Node NCubes1 = new ogl.scenegraph.Node("Cubes1");
-
+		ogl.scenegraph.Node NCubes1 = new ogl.scenegraph.Node("Scene");
+		root.addNode(NCubes1);
 		for (int temp = 0; temp < cubesLevel1.getLength(); temp++) {
 			Cube c = new Cube(defaultshader, "");
 
@@ -61,17 +61,20 @@ public class ReaderXML {
 						Cube c2 = new Cube(defaultshader, "");
 						c2.setTransformation(vecmath.translationMatrix(vecmath
 								.vector(.75f * temp2, 0f, 0f)));
-						//c.addNode(c2);
+						c.addNode(c2);
 					}
 				}
 			}
 
 			// NCubes1.setTransformation(vecmath.translationMatrix(vecmath.vector(
 			// 0f, -1.5f * temp, 0f)));
-			root.addNode(NCubes1);
+			
 
 		}
+		
 		return root;
 	}
+	
+	
 
 }

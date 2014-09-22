@@ -35,6 +35,8 @@ public class Node {
 	// Error: parent Node is not correctly set
 	public Node addNode(Node node) {
 //		this.nodes.add(node);
+		// CHANGED from this.getNode(0).getNode(0) TO this
+		// if current node has children
 		if (this.getNodes().size() != 0) {
 			node.parent = this.getNode(0).getNode(0);
 			node.index = node.getParent().getNodes().size();

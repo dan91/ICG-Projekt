@@ -82,40 +82,40 @@ public class StartDan implements App {
 		background = new Plane(defaultshader, "Background");
 
 //		//Imports the structure of the scene via XML
-//		ReaderXML reader = new ReaderXML();
-//		Node scene = null;
-//		try {
-//			scene = reader.getScene(new File("res/scene.xml"), defaultshader);
-//			System.out.println(scene.toString());
-//
-//		} catch (ParserConfigurationException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (SAXException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		ReaderXML reader = new ReaderXML();
+		Node scene = null;
+		try {
+			scene = reader.getScene(new File("res/scene.xml"), defaultshader);
+			System.out.println(scene.toString());
+
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		//Adds the imported structure to the root node
-		root = new Node("Root");
-		Node scene = new Node("Scene");
-		scene.addNode(new Cube(defaultshader, "Cube1"));
-		scene.addNode(new Cube(defaultshader, "Cube2"));
-		scene.addNode(new Cube(defaultshader, "Cube3"));
-		scene.getNode(0).getNode(0).getNode(2).addNode(new Cube(defaultshader, "Cube3_1"));
-		scene.addNode(new Cube(defaultshader, "Cube4"));
-		scene.addNode(new Cube(defaultshader, "Cube5"));
-		scene.addNode(new Cube(defaultshader, "Cube6"));
+		root = scene;
+//		Node scene = new Node("Scene");
+//		scene.addNode(new Cube(defaultshader, "Cube1"));
+//		scene.addNode(new Cube(defaultshader, "Cube2"));
+//		scene.addNode(new Cube(defaultshader, "Cube3"));
+//		scene.getNode(0).getNode(0).getNode(2).addNode(new Cube(defaultshader, "Cube3_1"));
+//		scene.addNode(new Cube(defaultshader, "Cube4"));
+//		scene.addNode(new Cube(defaultshader, "Cube5"));
+//		scene.addNode(new Cube(defaultshader, "Cube6"));
 		root.addNode(scene);
 		
 		//Set values for the selection of objects
 		countObject = 0;
 		activeObject = root.getNode(0).getNode(0).getNode(0).getNode(0);
 		activePlane = root.getNode(0).getNode(0);
-		objectsPerLevel = scene.getNode(0).getNode(0).getNodes().size();
+		objectsPerLevel = scene.getNode(0).getNode(0).getNode(0).getNodes().size();
 		
 		// Creates Camera
 		cam = new Camera("cam");
@@ -282,6 +282,14 @@ public class StartDan implements App {
 		if (activeObject.getNodes().size() != 0) {
 			activeObject.getNode(0).display(modelMatrix);
 		}
+//		ObjLoader loader = null;
+//		try {
+//			loader = new ObjLoader("res/Cube.obj");
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		loader.render();
 //		for (int i = 0; i < activeObject.getParent().getNodes().size(); i++) {
 //			activeObject.getParent().getNode(i).display(modelMatrix);
 //		}
