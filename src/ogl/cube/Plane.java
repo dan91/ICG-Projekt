@@ -23,11 +23,12 @@ public class Plane extends Node {
 
 	Shader defaultshader;
 	
+	
 	private FloatBuffer positionData;
 	private FloatBuffer colorData;
 	private FloatBuffer textureData;
-
-	private Texture texture;
+	
+	Texture tex;
 	
 	public Plane(Shader defaultshader, String name) {
 		super(name);
@@ -52,35 +53,47 @@ public class Plane extends Node {
 		colorData.rewind();
 		textureData.rewind();
 		
-		texture = new Texture(new File("res/white.png"));
+		tex = new Texture(new File("res/white.PNG"));
 		
 	}
+	
+	public Shader getDefaultshader() {
+		return defaultshader;
+	}
+
 	
 	@Override
 	public void display(Matrix m) { 
 
 		defaultshader.setModelMatrixUniform(m.mult(getTransformation()));
+
 		// Enable the vertex data arrays (with indices 0 and 1). We use a vertex
 		// position and a vertex color.
-		GL11.glEnable(GL11.GL_BLEND);
-		//
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		glVertexAttribPointer(vertexAttribIdx, 3, false, 0, positionData);
 		glEnableVertexAttribArray(vertexAttribIdx);
-		glVertexAttribPointer(colorAttribIdx, 4, false, 0, colorData);
+		glVertexAttribPointer(colorAttribIdx, 3, false, 0, colorData);
 		glEnableVertexAttribArray(colorAttribIdx);
 		glVertexAttribPointer(textureAttribIdx, 2, false, 0, textureData);
 		glEnableVertexAttribArray(textureAttribIdx);
-		texture.bind();
 
 		// Draw the triangles that form the cube from the vertex data arrays.
+		tex.bind();
 		glDrawArrays(GL11.GL_TRIANGLES, 0, vertices.length);
+	}
+	
+	public void setTexture(){
+		tex = new Texture(new File("res/Test2.PNG"));
 	}
 	
 	// The attribute indices for the vertex data.
 	public static int vertexAttribIdx = 0;
 	public static int colorAttribIdx = 1;
 	public static int textureAttribIdx = 2;
+
+	// Width, depth and height of the cube divided by 2.
+	float w2 = 20f;
+	float h2 = 20f;
+	float d2 = 0f;
 
 	// Make construction of vertices easy on the eyes.
 	private Vertex v(Vector p, Color c, TexCoord t) {
@@ -105,10 +118,13 @@ public class Plane extends Node {
 	  // The colors of the cube vertices.
 	  private Color[] c = { 
 	      col(0, 0, 2.55f), 
+
 	  };
 	  
 	  private TexCoord[] t = {
 			  tex(0, 0),
+			  tex(1, 0),
+			  tex(1, 1)
 	  };
 	  
 	  
@@ -127,21 +143,22 @@ public class Plane extends Node {
 	  
 	  // The positions of the cube vertices.
 	  private Vector[] p = { 
-		      vec( 0, 0, 0), 
-		      vec( 1024, 0, 0),
-		      vec( 0, 1024, 0), 
-		      vec(-1024, 0, 0), 
-		      vec( 0,-1024, 0), 
+		      vec(-w2, -h2, -d2), 
+		      vec(w2, -h2, -d2),
+		      vec(w2, h2, -d2), 
+		      vec(-w2, h2, -d2), 
 		  };
 	  
 
 		  // Vertices combine position and color information. Every four vertices define
 		  // one side of the cube.
-		  public Vertex[] vertices = {
-		      v(p[0], c[0], t[0]), v(p[1], c[0], t[0]), v(p[2], c[0], t[0]),
-		      v(p[0], c[0], t[0]), v(p[2], c[0], t[0]), v(p[3], c[0], t[0]),
-		      v(p[0], c[0], t[0]), v(p[3], c[0], t[0]), v(p[4], c[0], t[0]),
-		      v(p[0], c[0], t[0]), v(p[4], c[0], t[0]), v(p[1], c[0], t[0]),
+		  private Vertex[] vertices = {
+		      // front
+		      v(p[0], c[0], t[0]), v(p[2], c[0], t[1]), v(p[3], c[0], t[2]),
+		      // front 2
+		      v(p[0], c[0], t[0]), v(p[1], c[0], t[1]), v(p[2], c[0], t[2]),
+		     
+		      
 		  };
 	  
 }

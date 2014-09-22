@@ -25,8 +25,6 @@ public class Node {
 	private Node previous;
 	private int index;
 
-	private Shader defaultshader;
-
 	public Node(String name) {
 		setTransformation(vecmath.identityMatrix());
 		this.nodes = new ArrayList<Node>();
@@ -36,7 +34,6 @@ public class Node {
 		setTransformation(vecmath.identityMatrix());
 		this.nodes = new ArrayList<Node>();
 		this.name = name;
-		this.defaultshader = defaultshader;
 	}
 
 	// Error: parent Node is not correctly set
@@ -51,7 +48,7 @@ public class Node {
 		else{
 			node.index = 0;
 		}
-		if (node.getClass() == Cube.class || node.getClass() == Pyramid.class) {
+		if (node.getClass() == Cube.class || node.getClass() == Pyramide.class) {
 			if (node.index == 0){
 				Node plane = new Node("Plane");
 				Node tasks = new Node("Tasks");
@@ -67,9 +64,9 @@ public class Node {
 					depth++;
 				}
 				if (depth > 2) {
-					plane.setTransformation(node.transformation.mult(vecmath.translationMatrix(0, 0, -0.5f * depth)));
+					plane.setTransformation(node.transformation.mult(vecmath.translationMatrix(0, 0, -1f * depth)));
 				}
-				Plane background = new Plane(defaultshader, "Backgound");
+				Plane background = new Plane(new Shader(), "Backgound");
 				background.setTransformation(vecmath.translationMatrix(0, 0, -4f));
 				background.setParent(plane);
 				tasks.nodes.add(node);
