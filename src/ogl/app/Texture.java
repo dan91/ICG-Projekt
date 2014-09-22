@@ -98,6 +98,8 @@ public final class Texture {
 
     // gl.glGenerateMipmap(GL11.GL_TEXTURE_2D);
   }
+  
+
 
   /**
    * Bind the OpenGL texture object to the currently active texture unit.

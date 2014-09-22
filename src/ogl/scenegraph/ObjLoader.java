@@ -204,8 +204,8 @@ public class ObjLoader implements DefaultMesh {		//	extends AbstractModelLoader 
                           colorData.put(v.color.asArray());
                           normalData.put(v.normals.asArray());      
                          float[] tex = new float[2];
-                         tex[0] = (float) v.texture2.asArray()[0];
-                         tex[1] = (float) v.texture2.asArray()[1];
+                         tex[0] = (float) v.texture2.x;
+                         tex[1] = (float) v.texture2.y;
                           textureData.put(tex);
                         }
                         positionData.rewind();

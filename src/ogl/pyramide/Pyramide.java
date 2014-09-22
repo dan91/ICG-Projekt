@@ -1,193 +1,180 @@
-/*******************************************************************************
- * Copyright (c) 2013 Henrik Tramberend, Marc Latoschik.
- * All rights reserved.
- *******************************************************************************/
 package ogl.pyramide;
 
 import static ogl.vecmathimp.FactoryDefault.vecmath;
+import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 
-import java.io.IOException;
+import java.io.File;
 import java.nio.FloatBuffer;
 
-import ogl.app.App;
-import ogl.app.Input;
-import ogl.app.MatrixUniform;
-import ogl.app.OpenGLApp;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+
+import ogl.app.Texture;
 import ogl.cube.Shader;
+import ogl.scenegraph.Node;
 import ogl.scenegraph.Vertex;
 import ogl.vecmath.Color;
+import ogl.vecmath.Matrix;
+import ogl.vecmath.TexCoord;
 import ogl.vecmath.Vector;
 
-import org.lwjgl.input.Keyboard;
+public class Pyramide extends Node {
 
-//Select the factory we want to use.
+	Shader defaultshader;
+	
+	
+	private FloatBuffer positionData;
+	private FloatBuffer colorData;
+	private FloatBuffer textureData;
+	
+	Texture tex;
+	
+	public Pyramide(Shader defaultshader, String name) {
+		super(name);
+		this.defaultshader = defaultshader;
 
-// A simple but complete OpenGL 2.0 ES application.
+		// Prepare the vertex data arrays.
+		// Compile vertex data into a Java Buffer data structures that can be
+		// passed to the OpenGL API efficently.
+		positionData = BufferUtils.createFloatBuffer(vertices.length
+				* vecmath.vectorSize());
+		colorData = BufferUtils.createFloatBuffer(vertices.length
+				* vecmath.colorSize());
+		
+		textureData = BufferUtils.createFloatBuffer(vertices.length * 2);
 
-public class Pyramide implements App {
-	public Shader vs;
-	public Shader fs;
-
-	public Pyramide () throws IOException {
-		  this.vs = new Shader();
-		  this.fs = new Shader();
+		for (Vertex v : vertices) {
+			positionData.put(v.position.asArray());
+			colorData.put(v.color.asArray());
+			textureData.put(v.texture.asArray());
+		}
+		positionData.rewind();
+		colorData.rewind();
+		textureData.rewind();
+		
+		tex = new Texture(new File("res/Test1.PNG"));
+		
 	}
-  static public void main(String[] args) throws IOException {
-    new OpenGLApp("Rotating Cube - OpenGL ES 2.0 (lwjgl)", new Pyramide())
-      .start();
-  }
+	
+	public Shader getDefaultshader() {
+		return defaultshader;
+	}
 
- 
+	
+	@Override
+	public void display(Matrix m) { 
 
-  public MatrixUniform getModelMatrixUniform() {
-	return modelMatrixUniform;
-}
+		defaultshader.setModelMatrixUniform(m.mult(getTransformation()));
 
-public void setModelMatrixUniform(MatrixUniform modelMatrixUniform) {
-	this.modelMatrixUniform = modelMatrixUniform;
-}
+		// Enable the vertex data arrays (with indices 0 and 1). We use a vertex
+		// position and a vertex color.
+		glVertexAttribPointer(vertexAttribIdx, 3, false, 0, positionData);
+		glEnableVertexAttribArray(vertexAttribIdx);
+		glVertexAttribPointer(colorAttribIdx, 3, false, 0, colorData);
+		glEnableVertexAttribArray(colorAttribIdx);
+		glVertexAttribPointer(textureAttribIdx, 2, false, 0, textureData);
+		glEnableVertexAttribArray(textureAttribIdx);
 
-public MatrixUniform getViewMatrixUniform() {
-	return viewMatrixUniform;
-}
+		// Draw the triangles that form the cube from the vertex data arrays.
+		tex.bind();
+		glDrawArrays(GL11.GL_TRIANGLES, 0, vertices.length);
+	}
+	
+	public void setTexture(){
+		tex = new Texture(new File("res/Test2.PNG"));
+	}
+	
+	// The attribute indices for the vertex data.
+	public static int vertexAttribIdx = 0;
+	public static int colorAttribIdx = 1;
+	public static int textureAttribIdx = 2;
 
-public void setViewMatrixUniform(MatrixUniform viewMatrixUniform) {
-	this.viewMatrixUniform = viewMatrixUniform;
-}
+	// Width, depth and height of the cube divided by 2.
+	float w2 = 0.5f;
+	float h2 = 0.5f;
+	float d2 = 0.5f;
 
-public MatrixUniform getProjectionMatrixUniform() {
-	return projectionMatrixUniform;
-}
+	// Make construction of vertices easy on the eyes.
+	private Vertex v(Vector p, Color c, TexCoord t) {
+		return new Vertex(p, c, t);
+	}
 
-public void setProjectionMatrixUniform(MatrixUniform projectionMatrixUniform) {
-	this.projectionMatrixUniform = projectionMatrixUniform;
-}
+	// Make construction of vectors easy on the eyes.
+	private Vector vec(float x, float y, float z) {
+		
+		return vecmath.vector(x, y, z);
+	}
 
-/*
-   * (non-Javadoc)
-   * 
-   * @see cg2.cube.App#simulate(float, cg2.cube.Input)
-   */
-  @Override
-  public void simulate(float elapsed, Input input) {
-    // Pressing key 'r' toggles the cube animation.
-    if (input.isKeyToggled(Keyboard.KEY_R))
-      // Increase the angle with a speed of 90 degrees per second.
-      angle += 90 * elapsed;
-  }
+	// Make construction of colors easy on the eyes.
+	private Color col(float r, float g, float b) {
+		return vecmath.color(r, g, b);
+	}
+	
+	private TexCoord tex(float x, float y){
+		return new TexCoord(x, y);
+	}
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see cg2.cube.App#display(int, int, javax.media.opengl.GL2ES2)
-   */
-  @Override
-  public void display(int width, int height) {
-    
-  }
+	  // The colors of the cube vertices.
+	  private Color[] c = { 
+	      col(0, 0, 0), 
+	      col(1, 0, 0), 
+	      col(1, 1, 0), 
+	      col(0, 1, 0),
+	      col(1, 0, 1), 
+	      col(0, 0, 1), 
+	      col(0, 1, 1), 
+	      col(1, 1, 1),
+	      col(1, 23, 1) 
+	  };
+	  
+	  private TexCoord[] t = {
+			  tex(0, 0),
+			  tex(1, 0),
+			  tex(1, 1)
+	  };
+	  
+	  
+	  // The vertex program source code.
+	
+	
+	  //
+	  //     6 ------- 7 
+	  //   / |       / | 
+	  //  3 ------- 2  | 
+	  //  |  |      |  | 
+	  //  |  5 -----|- 4 
+	  //  | /       | / 
+	  //  0 ------- 1
+	  //
+	  
+	  // The positions of the cube vertices.
+	  private Vector[] p = { 
+		      vec(-w2, -h2, d2), // 0
+		      vec(w2, -h2, d2), // 1
+		      vec(0, h2, 0), //2
+		      vec(-w2, -h2, -d2), //3
+		      vec(w2, -h2, -d2), //4
+		  };
+	  
 
-  public static int getVertexAttribIdx() {
-	return vertexAttribIdx;
-}
+		  // Vertices combine position and color information. Every four vertices define
+		  // one side of the cube.
+	  private Vertex[] vertices = {
+		      // front
+		      v(p[0], c[0], t[1]), v(p[2], c[1], t[1]), v(p[1], c[2], t[1]),
+		      // right
+		      v(p[1], c[1], t[1]), v(p[4], c[4], t[1]), v(p[2], c[2], t[1]),
+		      // back
+		      v(p[4], c[4], t[1]), v(p[3], c[2], t[1]), v(p[2], c[3], t[1]),
+		      // left
+		      v(p[3], c[3], t[0]), v(p[0], c[0], t[0]), v(p[2], c[2], t[0]),
+		      // bottom right
+		      v(p[3], c[3], t[0]), v(p[4], c[0], t[0]), v(p[1], c[2], t[0]),
+		      // bottom left
+		      v(p[1], c[3], t[0]), v(p[0], c[4], t[0]), v(p[3], c[1], t[0]),
+		  };
 
-public static void setVertexAttribIdx(int vertexAttribIdx) {
-	Pyramide.vertexAttribIdx = vertexAttribIdx;
-}
-
-public static int getColorAttribIdx() {
-	return colorAttribIdx;
-}
-
-public static void setColorAttribIdx(int colorAttribIdx) {
-	Pyramide.colorAttribIdx = colorAttribIdx;
-}
-
-// The shader program.
-  private int program;
-
-  // The location of the "mvpMatrix" uniform variable.
-  private MatrixUniform modelMatrixUniform;
-  private MatrixUniform viewMatrixUniform;
-  private MatrixUniform projectionMatrixUniform;
-
-  // The attribute indices for the vertex data.
-  public static int vertexAttribIdx = 0;
-  public static int colorAttribIdx = 1;
-
-  // Width, depth and height of the cube divided by 2.
-  float w2 = 0.5f;
-  float h2 = 0.5f;
-  float d2 = 0.5f;
-
-
- 
-
-  // Make construction of vertices easy on the eyes.
-  private Vertex v(Vector p, Color c) {
-    return new Vertex(p, c);
-  }
-
-  // Make construction of vectors easy on the eyes.
-private Vector vec(float x, float y, float z) {
-    return vecmath.vector(x, y, z);
-  }
-
-  // Make construction of colors easy on the eyes.
-  private Color col(float r, float g, float b) {
-    return vecmath.color(r, g, b);
-  }
-
-  //
-  //     
-  //   
-  //        2   | 
-  //  |  |      |  | 
-  //  |  3   	   4
-  //  | /       | / 
-  //  0 ------- 1
-  //
-  
-  // The positions of the cube vertices.
-  private Vector[] p = { 
-      vec(-w2, -h2, d2), // 0
-      vec(w2, -h2, d2), // 1
-      vec(0, h2, 0), //2
-      vec(-w2, -h2, -d2), //3
-      vec(w2, -h2, -d2), //4
-  };
-
-  // The colors of the cube vertices.
-  private Color[] c = { 
-      col(1, 1, 1), 
-      col(1, 1, 1), 
-      col(1, 1, 1), 
-      col(1, 1, 1), 
-      col(1, 1, 1)
-  };
-
-
-  // Vertices combine position and color information. Every four vertices define
-  // one side of the cube.
-  private Vertex[] vertices = {
-      // front
-      v(p[0], c[0]), v(p[2], c[1]), v(p[1], c[2]),
-      // right
-      v(p[1], c[1]), v(p[4], c[4]), v(p[2], c[2]),
-      // back
-      v(p[4], c[4]), v(p[3], c[2]), v(p[2], c[3]),
-      // left
-      v(p[3], c[3]), v(p[0], c[0]), v(p[2], c[2]),
-      // bottom right
-      v(p[3], c[3]), v(p[4], c[0]), v(p[1], c[2]),
-      // bottom left
-      v(p[1], c[3]), v(p[0], c[4]), v(p[3], c[1]),
-  };
-
-  private FloatBuffer positionData;
-  private FloatBuffer colorData;
-
-  // Initialize the rotation angle of the cube.
-  private float angle = 0;
-
-
+	  
 }

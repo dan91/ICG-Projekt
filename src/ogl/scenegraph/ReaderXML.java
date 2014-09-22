@@ -11,6 +11,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import ogl.cube.Cube;
 import ogl.cube.Shader;
+import ogl.pyramide.Pyramide;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -64,7 +65,7 @@ public class ReaderXML {
 					if(cube2.hasAttributes()) {
 						name2 = cube2.getAttributes().getNamedItem("name").getTextContent();
 					}
-					Cube c2 = new Cube(defaultshader, name2);
+					Pyramide c2 = new Pyramide(defaultshader, name2);
 
 					if (cube2.getNodeType() == Node.ELEMENT_NODE) {
 						System.out.println("\tCurrent Element in Level 2:"

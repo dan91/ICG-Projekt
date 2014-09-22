@@ -22,6 +22,7 @@ import ogl.app.OpenGLApp;
 import ogl.cube.Cube;
 import ogl.cube.Plane;
 import ogl.cube.Shader;
+import ogl.pyramide.Pyramide;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
 
@@ -63,6 +64,8 @@ public class StartDan implements App {
 
 	Plane background;
 
+	private ObjLoader loader;
+
 	// Initialize the rotation angle of the cube.
 
 	@Override
@@ -82,7 +85,7 @@ public class StartDan implements App {
 		background = new Plane(defaultshader, "Background");
 		background2 = new Plane(defaultshader, "Background");
 
-//		//Imports the structure of the scene via XML
+		// //Imports the structure of the scene via XML
 		ReaderXML reader = new ReaderXML();
 		Node scene = null;
 		try {
@@ -100,27 +103,35 @@ public class StartDan implements App {
 			e.printStackTrace();
 		}
 
-		//Adds the imported structure to the root node
+		// Adds the imported structure to the root node
 		root = scene;
-//		Node scene = new Node("Scene");
-//		scene.addNode(new Cube(defaultshader, "Cube1"));
-//		scene.addNode(new Cube(defaultshader, "Cube2"));
-//		scene.addNode(new Cube(defaultshader, "Cube3"));
-//		scene.getNode(0).getNode(0).getNode(2).addNode(new Cube(defaultshader, "Cube3_1"));
-//		scene.addNode(new Cube(defaultshader, "Cube4"));
-//		scene.addNode(new Cube(defaultshader, "Cube5"));
-//		scene.addNode(new Cube(defaultshader, "Cube6"));
+		// Node scene = new Node("Scene");
+		// scene.addNode(new Cube(defaultshader, "Cube1"));
+		// scene.addNode(new Cube(defaultshader, "Cube2"));
+		// scene.addNode(new Cube(defaultshader, "Cube3"));
+		// scene.getNode(0).getNode(0).getNode(2).addNode(new
+		// Cube(defaultshader, "Cube3_1"));
+		// scene.addNode(new Cube(defaultshader, "Cube4"));
+		// scene.addNode(new Cube(defaultshader, "Cube5"));
+		// scene.addNode(new Cube(defaultshader, "Cube6"));
 		root.addNode(scene);
-		
-		//Set values for the selection of objects
+
+		// Set values for the selection of objects
 		countObject = 0;
 		activeObject = root.getNode(0).getNode(0).getNode(0).getNode(0);
 		activePlane = root.getNode(0).getNode(0);
-		objectsPerLevel = scene.getNode(0).getNode(0).getNode(0).getNodes().size();
-		
+		objectsPerLevel = scene.getNode(0).getNode(0).getNode(0).getNodes()
+				.size();
+
 		// Creates Camera
 		cam = new Camera("cam");
-
+		loader = null;
+		try {
+			loader = new ObjLoader("res/cube.obj");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	// Should be used for animations
@@ -147,12 +158,13 @@ public class StartDan implements App {
 		}
 		if (input.isKeyDown(Keyboard.KEY_Y)) {
 			cam.moveOut(elapsed);
-		}
-		else if (input.isKeyDown(Keyboard.KEY_RIGHT)) {
+		} else if (input.isKeyDown(Keyboard.KEY_RIGHT)) {
 			if (changeInProgress == true) {
 				// stop rotation of active object
-				activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), 0).mult(
-						vecmath.translationMatrix(activeObject.getTransformation().getPosition())));
+				activeObject.setTransformation(vecmath.rotationMatrix(
+						vecmath.yAxis(), 0).mult(
+						vecmath.translationMatrix(activeObject
+								.getTransformation().getPosition())));
 				// increment count if count smaller amount of objects per level
 				if (countObject < objectsPerLevel - 1)
 					countObject++;
@@ -167,8 +179,10 @@ public class StartDan implements App {
 		} else if (input.isKeyDown(Keyboard.KEY_LEFT)) {
 			if (changeInProgress == true) {
 				// stop rotation of active object
-				activeObject.setTransformation(vecmath.rotationMatrix(vecmath.xAxis(), 0).mult(
-						vecmath.translationMatrix(activeObject.getTransformation().getPosition())));
+				activeObject.setTransformation(vecmath.rotationMatrix(
+						vecmath.yAxis(), 0).mult(
+						vecmath.translationMatrix(activeObject
+								.getTransformation().getPosition())));
 				// increment count if count smaller amount of objects per level
 				if (countObject > 0)
 					countObject--;
@@ -197,7 +211,11 @@ public class StartDan implements App {
 			}
 		} else if (input.isKeyDown(Keyboard.KEY_P)) {
 			if (changeInProgress == true) {
-				((Cube) activeObject).setTexture();
+				if (activeObject.getClass() == Cube.class)
+					((Cube) activeObject).setTexture();
+				else
+					((Pyramide) activeObject).setTexture();
+
 			}
 		}
 
@@ -205,7 +223,7 @@ public class StartDan implements App {
 			changeInProgress = true;
 		}
 
-		//Zoom in
+		// Zoom in
 		if (zoomInProgress == true && actionTime + 0.5 > timeElapsed) {
 			cam.moveIn(elapsed);
 		} else if (zoomInProgress == true) {
@@ -215,8 +233,8 @@ public class StartDan implements App {
 			objectsPerLevel = activePlane.getNode(0).getNodes().size();
 			countObject = 0;
 		}
-		
-		//Zoom out
+
+		// Zoom out
 		if (zoomOutProgress == true && actionTime + 0.5 > timeElapsed) {
 			cam.moveOut(elapsed);
 		} else if (zoomOutProgress == true) {
@@ -227,7 +245,8 @@ public class StartDan implements App {
 			countObject = activeObject.getIndex();
 		}
 
-		activeObject.setTransformation(activeObject.getTransformation().mult(vecmath.rotationMatrix(vecmath.xAxis(), angle)));
+		activeObject.setTransformation(activeObject.getTransformation().mult(
+				vecmath.rotationMatrix(vecmath.yAxis(), angle)));
 		angle = 90 * elapsed;
 
 	}
@@ -260,13 +279,14 @@ public class StartDan implements App {
 		float aspect = (float) width / (float) height;
 
 		// The perspective projection. Camera space to NDC.
-		Matrix projectionMatrix = vecmath.perspectiveMatrix(60f, aspect, 0.1f, 100f);
+		Matrix projectionMatrix = vecmath.perspectiveMatrix(60f, aspect, 0.1f,
+				100f);
 
 		// The modeling transformation. Object space to world space.
 		Matrix modelMatrix = vecmath.translationMatrix(vecmath.vector(0, 0, 0));
-		
+
 		// The inverse camera transformation. World space to camera space.
-//		cam.setTransformation(vecmath.translationMatrix(2, 0, 0));
+		// cam.setTransformation(vecmath.translationMatrix(2, 0, 0));
 		cam.display(modelMatrix);
 		Matrix viewMatrix = cam.matrix();
 
@@ -285,25 +305,21 @@ public class StartDan implements App {
 		if (activeObject.getNodes().size() != 0) {
 			activeObject.getNode(0).display(modelMatrix);
 		}
-//		ObjLoader loader = null;
-//		try {
-//			loader = new ObjLoader("res/Cube.obj");
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		loader.render();
-//		for (int i = 0; i < activeObject.getParent().getNodes().size(); i++) {
-//			activeObject.getParent().getNode(i).display(modelMatrix);
-//		}
-//        if (activeObject.getNodes().size() != 0) {
-//        	for (int i = 0; i < activeObject.getNodes().size(); i++) {
-//    			activeObject.getNode(i).display(modelMatrix);
-//    		}
-//        }
-		background.setTransformation(vecmath.translationMatrix(0,0,-2f));
+
+		// for (int i = 0; i < activeObject.getParent().getNodes().size(); i++)
+		// {
+		// activeObject.getParent().getNode(i).display(modelMatrix);
+		// }
+		// if (activeObject.getNodes().size() != 0) {
+		// for (int i = 0; i < activeObject.getNodes().size(); i++) {
+		// activeObject.getNode(i).display(modelMatrix);
+		// }
+		// }
+		loader.render();
+
+		background.setTransformation(vecmath.translationMatrix(0, 0, -2f));
 		background.display(modelMatrix);
-		background2.setTransformation(vecmath.translationMatrix(0,0,-14f));
+		background2.setTransformation(vecmath.translationMatrix(0, 0, -14f));
 		background2.display(modelMatrix);
 	}
 
