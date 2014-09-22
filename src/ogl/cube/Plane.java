@@ -26,6 +26,8 @@ public class Plane extends Node {
 	private FloatBuffer positionData;
 	private FloatBuffer colorData;
 	private FloatBuffer textureData;
+
+	private Texture texture;
 	
 	public Plane(Shader defaultshader, String name) {
 		super(name);
@@ -50,7 +52,7 @@ public class Plane extends Node {
 		colorData.rewind();
 		textureData.rewind();
 		
-//		new Texture(new File("D:\\Dokumente\\Github\\ICG-Projekt\\res\\Test1.PNG"));
+		texture = new Texture(new File("res/white.png"));
 		
 	}
 	
@@ -58,15 +60,18 @@ public class Plane extends Node {
 	public void display(Matrix m) { 
 
 		defaultshader.setModelMatrixUniform(m.mult(getTransformation()));
-
 		// Enable the vertex data arrays (with indices 0 and 1). We use a vertex
 		// position and a vertex color.
+		GL11.glEnable(GL11.GL_BLEND);
+		//
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		glVertexAttribPointer(vertexAttribIdx, 3, false, 0, positionData);
 		glEnableVertexAttribArray(vertexAttribIdx);
 		glVertexAttribPointer(colorAttribIdx, 4, false, 0, colorData);
 		glEnableVertexAttribArray(colorAttribIdx);
 		glVertexAttribPointer(textureAttribIdx, 2, false, 0, textureData);
 		glEnableVertexAttribArray(textureAttribIdx);
+		texture.bind();
 
 		// Draw the triangles that form the cube from the vertex data arrays.
 		glDrawArrays(GL11.GL_TRIANGLES, 0, vertices.length);
@@ -122,11 +127,11 @@ public class Plane extends Node {
 	  
 	  // The positions of the cube vertices.
 	  private Vector[] p = { 
-		      vec( 0, 0, -2), 
-		      vec( 1024, 0, -2),
-		      vec( 0, 1024, -2), 
-		      vec(-1024, 0, -2), 
-		      vec( 0,-1024, -2), 
+		      vec( 0, 0, 0), 
+		      vec( 1024, 0, 0),
+		      vec( 0, 1024, 0), 
+		      vec(-1024, 0, 0), 
+		      vec( 0,-1024, 0), 
 		  };
 	  
 

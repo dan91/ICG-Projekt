@@ -68,7 +68,7 @@ public class StartDan implements App {
 	@Override
 	public void init() {
 		// Set background color to black.
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClearColor(.4f, 0.1f, 0.5f, 0.0f);
 
 		// Enable depth testing.
 		glEnable(GL11.GL_DEPTH_TEST);
@@ -80,6 +80,7 @@ public class StartDan implements App {
 
 		// Creates 3D-Objects
 		background = new Plane(defaultshader, "Background");
+		background2 = new Plane(defaultshader, "Background");
 
 //		//Imports the structure of the scene via XML
 		ReaderXML reader = new ReaderXML();
@@ -221,8 +222,8 @@ public class StartDan implements App {
 		} else if (zoomOutProgress == true) {
 			zoomOutProgress = false;
 			activeObject = activePlane.getParent();
-			activePlane = activeObject.getParent();
-			objectsPerLevel = activePlane.getNodes().size();
+			activePlane = activeObject.getParent().getParent();
+			objectsPerLevel = activePlane.getNode(0).getNodes().size();
 			countObject = activeObject.getIndex();
 		}
 
@@ -237,6 +238,8 @@ public class StartDan implements App {
 	Vector axis = vecmath.vector(0, 1, 0);
 	Vector move = vecmath.vector(0, 0, 0);
 	Vector rotate = vecmath.vector(0, 0, 0);
+
+	private Plane background2;
 
 	/*
 	 * (non-Javadoc)
@@ -298,7 +301,10 @@ public class StartDan implements App {
 //    			activeObject.getNode(i).display(modelMatrix);
 //    		}
 //        }
-//		background.display(modelMatrix);
+		background.setTransformation(vecmath.translationMatrix(0,0,-2f));
+		background.display(modelMatrix);
+		background2.setTransformation(vecmath.translationMatrix(0,0,-14f));
+		background2.display(modelMatrix);
 	}
 
 }

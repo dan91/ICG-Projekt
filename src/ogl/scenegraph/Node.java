@@ -25,11 +25,18 @@ public class Node {
 	private Node previous;
 	private int index;
 
+	private Shader defaultshader;
+
 	public Node(String name) {
 		setTransformation(vecmath.identityMatrix());
 		this.nodes = new ArrayList<Node>();
 		this.name = name;
-
+	}
+	public Node(String name, Shader defaultshader) {
+		setTransformation(vecmath.identityMatrix());
+		this.nodes = new ArrayList<Node>();
+		this.name = name;
+		this.defaultshader = defaultshader;
 	}
 
 	// Error: parent Node is not correctly set
@@ -62,12 +69,12 @@ public class Node {
 				if (depth > 2) {
 					plane.setTransformation(node.transformation.mult(vecmath.translationMatrix(0, 0, -0.5f * depth)));
 				}
-				Plane background = new Plane(new Shader(), "Backgound");
-				background.setTransformation(vecmath.translationMatrix(0, 0, -2));
+				Plane background = new Plane(defaultshader, "Backgound");
+				background.setTransformation(vecmath.translationMatrix(0, 0, -4f));
 				background.setParent(plane);
 				tasks.nodes.add(node);
 				plane.nodes.add(tasks);
-				plane.nodes.add(background);
+				//plane.nodes.add(background);
 				this.nodes.add(plane);
 			}
 			else {

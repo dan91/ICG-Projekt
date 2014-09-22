@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scene>
-	<cube>
-		<cube />
-		<cube />
-	</cube>
-	<cube>
-		<cube />
-		<cube />
-		<cube />
-		<cube />
-	</cube>
-	<cube />
-	<cube />
+	<task name="Haushalt">
+		<task name="Küche">
+			<task name="Spülmaschine ausräumen" />
+			<task />
+		</task>
+		<task name="Wohnzimmer">
+			<task name="Saugen" />
+		</task>
+	</task>
+	<task name="Schule">
+		<task name="Hausaufgaben">
+			<task name="Deutsch" />
+			<task name="Englisch" />
+			<task name="Französisch" />
+			<task name="Spanisch" />
+			<task name="Latein" />
+		</task>
+		<task name="Schulaufgaben"/>
+	</task>
+	<task />
+	<task />
 </scene>
