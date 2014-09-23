@@ -9,9 +9,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import ogl.cube.Cube;
-import ogl.cube.Shader;
-import ogl.pyramide.Pyramide;
+import ogl.objects.Cube;
+import ogl.objects.Pyramide;
+import ogl.shader.Shader;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;

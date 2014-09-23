@@ -1,4 +1,4 @@
-package ogl.cube;
+package ogl.objects;
 
 import static ogl.vecmathimp.FactoryDefault.vecmath;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
@@ -14,12 +14,13 @@ import org.lwjgl.opengl.GL11;
 import ogl.app.Texture;
 import ogl.scenegraph.Node;
 import ogl.scenegraph.Vertex;
+import ogl.shader.Shader;
 import ogl.vecmath.Color;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.TexCoord;
 import ogl.vecmath.Vector;
 
-public class Cube extends Node {
+public class Plane extends Node {
 
 	Shader defaultshader;
 	
@@ -30,7 +31,7 @@ public class Cube extends Node {
 	
 	Texture tex;
 	
-	public Cube(Shader defaultshader, String name) {
+	public Plane(Shader defaultshader, String name) {
 		super(name);
 		this.defaultshader = defaultshader;
 
@@ -53,7 +54,7 @@ public class Cube extends Node {
 		colorData.rewind();
 		textureData.rewind();
 		
-		tex = new Texture(new File("res/Test1.PNG"));
+		tex = new Texture(new File("res/white.PNG"));
 		
 	}
 	
@@ -91,9 +92,9 @@ public class Cube extends Node {
 	public static int textureAttribIdx = 2;
 
 	// Width, depth and height of the cube divided by 2.
-	float w2 = 0.5f;
-	float h2 = 0.5f;
-	float d2 = 0.5f;
+	float w2 = 20f;
+	float h2 = 20f;
+	float d2 = 0f;
 
 	// Make construction of vertices easy on the eyes.
 	private Vertex v(Vector p, Color c, TexCoord t) {
@@ -117,15 +118,8 @@ public class Cube extends Node {
 
 	  // The colors of the cube vertices.
 	  private Color[] c = { 
-	      col(0, 0, 0), 
-	      col(1, 0, 0), 
-	      col(1, 1, 0), 
-	      col(0, 1, 0),
-	      col(1, 0, 1), 
-	      col(0, 0, 1), 
-	      col(0, 1, 1), 
-	      col(1, 1, 1),
-	      col(1, 23, 1) 
+	      col(0, 0, 2.55f), 
+
 	  };
 	  
 	  private TexCoord[] t = {
@@ -154,11 +148,6 @@ public class Cube extends Node {
 		      vec(w2, -h2, -d2),
 		      vec(w2, h2, -d2), 
 		      vec(-w2, h2, -d2), 
-		      vec(w2, -h2, d2), 
-		      vec(-w2, -h2, d2),
-		      vec(-w2, h2, d2), 
-		      vec(w2, h2, d2),
-		      vec(0, 2*h2, 0)
 		  };
 	  
 
@@ -166,35 +155,10 @@ public class Cube extends Node {
 		  // one side of the cube.
 		  private Vertex[] vertices = {
 		      // front
-		      v(p[0], c[0], t[0]), v(p[2], c[1], t[1]), v(p[3], c[3], t[2]),
+		      v(p[0], c[0], t[0]), v(p[2], c[0], t[1]), v(p[3], c[0], t[2]),
 		      // front 2
-		      v(p[0], c[0], t[0]), v(p[1], c[1], t[1]), v(p[2], c[3], t[2]),
+		      v(p[0], c[0], t[0]), v(p[1], c[0], t[1]), v(p[2], c[0], t[2]),
 		     
-		      // right
-		      v(p[1], c[1], t[0]), v(p[7], c[4], t[1]), v(p[2], c[7], t[2]),
-		      // right 2
-		      v(p[1], c[1], t[0]), v(p[4], c[4], t[1]), v(p[7], c[7], t[2]),
-		      
-		      // back
-		      v(p[4], c[1], t[0]), v(p[6], c[4], t[1]), v(p[7], c[7], t[2]),
-		      // back 2
-		      v(p[4], c[1], t[0]), v(p[5], c[4], t[1]), v(p[6], c[7], t[2]),
-		      
-		      // left
-		      v(p[5], c[1], t[0]), v(p[3], c[4], t[1]), v(p[6], c[7], t[2]),
-		      // left 2
-		      v(p[5], c[1], t[0]), v(p[0], c[4], t[1]), v(p[3], c[7], t[2]),
-		      
-		
-		      // top
-		      v(p[3], c[3], t[0]), v(p[7], c[7], t[1]), v(p[6], c[6], t[2]),
-		      // top2
-		      v(p[3], c[3], t[0]), v(p[2], c[7], t[1]), v(p[7], c[6], t[2]),
-		      
-		      // bottom
-		      v(p[5], c[5], t[0]), v(p[1], c[1], t[1]), v(p[0], c[0], t[2]),
-		      // bottom 2
-		      v(p[5], c[5], t[0]), v(p[4], c[1], t[1]), v(p[1], c[0], t[2]),
 		      
 		  };
 	  

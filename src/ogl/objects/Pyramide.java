@@ -1,4 +1,4 @@
-package ogl.pyramide;
+package ogl.objects;
 
 import static ogl.vecmathimp.FactoryDefault.vecmath;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
@@ -12,9 +12,9 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import ogl.app.Texture;
-import ogl.cube.Shader;
 import ogl.scenegraph.Node;
 import ogl.scenegraph.Vertex;
+import ogl.shader.Shader;
 import ogl.vecmath.Color;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.TexCoord;

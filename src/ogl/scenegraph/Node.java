@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ogl.vecmathimp.FactoryDefault.vecmath;
-import ogl.cube.Cube;
-import ogl.cube.Plane;
-import ogl.cube.Shader;
-import ogl.pyramide.Pyramide;
-import ogl.triangle.Pyramid;
+import ogl.objects.Cube;
+import ogl.objects.Plane;
+import ogl.objects.Pyramide;
+import ogl.shader.Shader;
 import ogl.vecmath.*;
 
 public class Node {

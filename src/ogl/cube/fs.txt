@@ -1,6 +1,0 @@
-varying vec3 fcolor;
-varying vec2 ftexture;
-uniform sampler2D Texture;
-void main() {
-gl_FragColor = vec4(fcolor, 0.4) * texture2D(Texture, ftexture);
-}

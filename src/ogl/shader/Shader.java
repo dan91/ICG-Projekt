@@ -1,4 +1,4 @@
-package ogl.cube;
+package ogl.shader;
 
 import static org.lwjgl.opengl.GL20.glAttachShader;
 import static org.lwjgl.opengl.GL20.glBindAttribLocation;
@@ -48,7 +48,7 @@ public class Shader {
 	public Shader() {
 		//Import shader from txt.
         try {
-        	FileReader fileReader = new FileReader("src/ogl/cube/vs.txt");
+        	FileReader fileReader = new FileReader("src/ogl/shader/vs.txt");
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             List<String> lines = new ArrayList<String>();
             String line = null;
@@ -58,7 +58,7 @@ public class Shader {
             bufferedReader.close();
             vsSource = lines.toArray(new String[lines.size()]);
 
-            FileReader fileReader2 = new FileReader("src/ogl/cube/fs.txt");
+            FileReader fileReader2 = new FileReader("src/ogl/shader/fs.txt");
             BufferedReader bufferedReader2 = new BufferedReader(fileReader2);
             List<String> lines2 = new ArrayList<String>();
             String line2 = null;
