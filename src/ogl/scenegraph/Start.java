@@ -50,7 +50,6 @@ public class Start implements App {
 
 	// camera object
 	private Camera cam;
-	private FreeFlight free;
 
 	// pointers on active elements
 	private Node activeObject;
@@ -130,7 +129,6 @@ public class Start implements App {
 
 		// Creates Camera
 		cam = new Camera("cam");
-		free = new FreeFlight("FreeFlight");
 		loader = null;
 		try {
 			loader = new ObjLoader("res/cube.obj");
@@ -147,7 +145,6 @@ public class Start implements App {
 			cam.setEyeY(Mouse.getY());
 			cam.setEyeX(Mouse.getX());
 
-		free.tansform(elapsed, input);
 		// Animation of the camera
 		if (input.isKeyDown(Keyboard.KEY_W)) {
 			cam.moveUp(elapsed);
@@ -304,8 +301,8 @@ public class Start implements App {
 		// cam.setTransformation(vecmath.translationMatrix(2, 0, 0));
 		
 		
-		free.display(modelMatrix);
-		cam.display(free.getTransformation());
+		
+		cam.display(modelMatrix);
 		Matrix viewMatrix = cam.matrix();
 
 		
