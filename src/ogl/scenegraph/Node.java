@@ -66,12 +66,8 @@ public class Node {
 				if (depth > 0) {
 					plane.setTransformation(vecmath.translationMatrix(0f, 0f, -1f * depth));
 				}
-				Plane background = new Plane(new Shader(), "Backgound");
-				background.setTransformation(vecmath.translationMatrix(0, 0, -4f));
-				background.setParent(plane);
 				tasks.nodes.add(node);
 				plane.nodes.add(tasks);
-				//plane.nodes.add(background);
 				this.nodes.add(plane);
 			}
 			else {
@@ -187,14 +183,4 @@ public class Node {
 		return output;
 	}
 
-	public static void main(String args[]) {
-		Node n1 = new Node("N1");
-		Node n2 = new Node("N2");
-		Node n3 = new Node("N3");
-		Node n4 = new Node("N4");
-		n1.addNode(n2);
-		n1.addNode(n3);
-		// System.out.println(n1.toString());
-		System.out.println(visitRecursively(n1));
-	}
 }

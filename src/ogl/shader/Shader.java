@@ -115,7 +115,6 @@ public class Shader {
 		// uniform variables.
 	}
 
-	//Aufgabe 2.2
 	public void setModelMatrixUniform(Matrix modelMatrixUniform) {
 		this.modelMatrixUniform.set(modelMatrixUniform);
 	}

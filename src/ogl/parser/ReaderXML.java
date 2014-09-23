@@ -1,4 +1,4 @@
-package ogl.scenegraph;
+package ogl.parser;
 
 import static ogl.vecmathimp.FactoryDefault.vecmath;
 

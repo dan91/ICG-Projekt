@@ -23,6 +23,8 @@ import ogl.app.OpenGLApp;
 import ogl.objects.Cube;
 import ogl.objects.Plane;
 import ogl.objects.Pyramide;
+import ogl.parser.ObjLoader;
+import ogl.parser.ReaderXML;
 import ogl.shader.Shader;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
@@ -138,7 +140,7 @@ public class Start implements App {
 	// Should be used for animations
 	public void simulate(float elapsed, Input input) {
 
-		// System.out.println(timeElapsed);
+		
 
 		// Animation of the camera
 		if (input.isKeyDown(Keyboard.KEY_W)) {
@@ -321,8 +323,10 @@ public class Start implements App {
 		// activeObject.getNode(i).display(modelMatrix);
 		// }
 		// }
-		loader.render();
-
+		loader.setTransformation(vecmath.translationMatrix(0,0,0));
+		if (input.isKeyDown(Keyboard.KEY_O)) {
+			loader.display(modelMatrix, defaultshader);
+		}
 		background.setTransformation(vecmath.translationMatrix(0, 0, -7f));
 		background.display(modelMatrix);
 		background2.setTransformation(vecmath.translationMatrix(0, 0, -13f));

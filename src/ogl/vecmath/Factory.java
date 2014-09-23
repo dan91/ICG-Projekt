@@ -192,6 +192,8 @@ public interface Factory {
    * @return The number of floats of color objects.
    */
   public abstract int colorSize();
+
+public Color ColorImp(int i, int j, int k, float f);
   
   
 }

@@ -23,13 +23,13 @@ import ogl.vecmath.Vector;
 public class Cube extends Node {
 
 	Shader defaultshader;
-	
+	Texture tex;
+
 	
 	private FloatBuffer positionData;
 	private FloatBuffer colorData;
 	private FloatBuffer textureData;
 	
-	Texture tex;
 	
 	public Cube(Shader defaultshader, String name) {
 		super(name);

@@ -1,13 +1,13 @@
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
-attribute vec3 vertex;
-attribute vec3 color;
-varying vec3 fcolor;
+attribute vec4 vertex;
+attribute vec4 color;
+varying vec4 fcolor;
 attribute vec2 texture;
 varying vec2 ftexture;
 void main() {
 fcolor = color;
-gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertex, 1);
+gl_Position = projectionMatrix * viewMatrix * modelMatrix * vertex;
 ftexture = texture;
 }

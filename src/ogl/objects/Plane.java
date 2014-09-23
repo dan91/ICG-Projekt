@@ -2,6 +2,7 @@ package ogl.objects;
 
 import static ogl.vecmathimp.FactoryDefault.vecmath;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 
@@ -14,11 +15,13 @@ import org.lwjgl.opengl.GL11;
 import ogl.app.Texture;
 import ogl.scenegraph.Node;
 import ogl.scenegraph.Vertex;
+import ogl.shader.ColorAlpha;
 import ogl.shader.Shader;
 import ogl.vecmath.Color;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.TexCoord;
 import ogl.vecmath.Vector;
+import ogl.shader.ColorAlpha;
 
 public class Plane extends Node {
 
@@ -41,13 +44,13 @@ public class Plane extends Node {
 		positionData = BufferUtils.createFloatBuffer(vertices.length
 				* vecmath.vectorSize());
 		colorData = BufferUtils.createFloatBuffer(vertices.length
-				* vecmath.colorSize());
+				* (vecmath.colorSize()+1));
 		
 		textureData = BufferUtils.createFloatBuffer(vertices.length * 2);
 
 		for (Vertex v : vertices) {
 			positionData.put(v.position.asArray());
-			colorData.put(v.color.asArray());
+			colorData.put(v.colorA.asArray());
 			textureData.put(v.texture.asArray());
 		}
 		positionData.rewind();
@@ -72,7 +75,7 @@ public class Plane extends Node {
 		// position and a vertex color.
 		glVertexAttribPointer(vertexAttribIdx, 3, false, 0, positionData);
 		glEnableVertexAttribArray(vertexAttribIdx);
-		glVertexAttribPointer(colorAttribIdx, 3, false, 0, colorData);
+		glVertexAttribPointer(colorAttribIdx, 4, false, 0, colorData);
 		glEnableVertexAttribArray(colorAttribIdx);
 		glVertexAttribPointer(textureAttribIdx, 2, false, 0, textureData);
 		glEnableVertexAttribArray(textureAttribIdx);
@@ -97,7 +100,7 @@ public class Plane extends Node {
 	float d2 = 0f;
 
 	// Make construction of vertices easy on the eyes.
-	private Vertex v(Vector p, Color c, TexCoord t) {
+	private Vertex v(Vector p, ColorAlpha c, TexCoord t) {
 		return new Vertex(p, c, t);
 	}
 
@@ -108,8 +111,8 @@ public class Plane extends Node {
 	}
 
 	// Make construction of colors easy on the eyes.
-	private Color col(float r, float g, float b) {
-		return vecmath.color(r, g, b);
+	private ColorAlpha col(float r, float g, float b) {
+		return new ColorAlpha(1,1,1,0.4f);
 	}
 	
 	private TexCoord tex(float x, float y){
@@ -117,9 +120,8 @@ public class Plane extends Node {
 	}
 
 	  // The colors of the cube vertices.
-	  private Color[] c = { 
+	  private ColorAlpha[] c = { 
 	      col(0, 0, 2.55f), 
-
 	  };
 	  
 	  private TexCoord[] t = {

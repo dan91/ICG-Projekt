@@ -120,4 +120,6 @@ public interface Vector {
 
   public abstract int size();
 
+public abstract float a();
+
 }
