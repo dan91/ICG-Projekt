@@ -30,6 +30,7 @@ import ogl.vecmath.Matrix;
 import ogl.vecmath.Vector;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.xml.sax.SAXException;
 
@@ -49,6 +50,7 @@ public class Start implements App {
 
 	// camera object
 	private Camera cam;
+	private FreeFlight free;
 
 	// pointers on active elements
 	private Node activeObject;
@@ -128,6 +130,7 @@ public class Start implements App {
 
 		// Creates Camera
 		cam = new Camera("cam");
+		free = new FreeFlight("FreeFlight");
 		loader = null;
 		try {
 			loader = new ObjLoader("res/cube.obj");
@@ -141,7 +144,10 @@ public class Start implements App {
 	public void simulate(float elapsed, Input input) {
 
 		
+			cam.setEyeY(Mouse.getY());
+			cam.setEyeX(Mouse.getX());
 
+		free.tansform(elapsed, input);
 		// Animation of the camera
 		if (input.isKeyDown(Keyboard.KEY_W)) {
 			cam.moveUp(elapsed);
@@ -296,12 +302,13 @@ public class Start implements App {
 
 		// The inverse camera transformation. World space to camera space.
 		// cam.setTransformation(vecmath.translationMatrix(2, 0, 0));
-		cam.display(modelMatrix);
+		
+		
+		free.display(modelMatrix);
+		cam.display(free.getTransformation());
 		Matrix viewMatrix = cam.matrix();
 
-		// Sets Transformations
-		// activeObject.setTransformation(vecmath.translationMatrix(vecmath.vector(-2f,
-		// -1.5f, 4f)));
+		
 
 		// Shader
 		defaultshader.setModelMatrixUniform(modelMatrix);

@@ -1,6 +1,9 @@
 package ogl.scenegraph;
 
 import static ogl.vecmathimp.FactoryDefault.vecmath;
+
+import org.lwjgl.input.Mouse;
+
 import ogl.vecmath.*;
 
 public class Camera extends Node{
@@ -76,6 +79,18 @@ public class Camera extends Node{
 
 	public float getEyeZ() {
 		return eyeZ;
+	}
+
+	public void setEyeY(float eyeY) {
+		int middleY = 768/2;
+		this.eyeY = (middleY-(eyeY))/50;
+	}
+
+	
+	public void setEyeX(float eyeX) {
+		int middleX = 1324/2;
+		this.eyeX = (middleX-(eyeX))/50;
+		System.out.println(eyeX);
 	}
 
 	public void setEyeZ(float eyeZ) {
