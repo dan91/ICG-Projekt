@@ -139,15 +139,7 @@ public class Pyramide extends Node {
 	  // The vertex program source code.
 	
 	
-	  //
-	  //     6 ------- 7 
-	  //   / |       / | 
-	  //  3 ------- 2  | 
-	  //  |  |      |  | 
-	  //  |  5 -----|- 4 
-	  //  | /       | / 
-	  //  0 ------- 1
-	  //
+	
 	  
 	  // The positions of the cube vertices.
 	  private Vector[] p = { 

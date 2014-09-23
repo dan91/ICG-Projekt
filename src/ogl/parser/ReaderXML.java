@@ -49,7 +49,6 @@ public class ReaderXML {
 			Cube c = new Cube(defaultshader, name);
 
 			if (cube.getNodeType() == Node.ELEMENT_NODE) {
-				System.out.println("\tCurrent Element in Level 1:" + cube.getNodeName());
 				c.setTransformation(vecmath.translationMatrix(vecmath.vector(
 						.75f * temp, 0f, 0f)));
 				NCubes1.addNode(c);
@@ -68,8 +67,7 @@ public class ReaderXML {
 					Pyramide c2 = new Pyramide(defaultshader, name2);
 
 					if (cube2.getNodeType() == Node.ELEMENT_NODE) {
-						System.out.println("\tCurrent Element in Level 2:"
-								+ cube2.getNodeName());
+						
 						c2.setTransformation(vecmath.translationMatrix(vecmath
 								.vector(.75f * temp2, 0f, 0f)));
 						c.addNode(c2);
@@ -85,8 +83,7 @@ public class ReaderXML {
 								name3 = cube3.getAttributes().getNamedItem("name").getTextContent();
 							}
 							if (cube3.getNodeType() == Node.ELEMENT_NODE) {
-								System.out.println("\tCurrent Element in Level 3:"
-										+ cube2.getNodeName());
+								
 								Cube c3 = new Cube(defaultshader, name3);
 								c3.setTransformation(vecmath.translationMatrix(vecmath
 										.vector(.75f * temp3, 0f, 0f)));
@@ -99,7 +96,6 @@ public class ReaderXML {
 			}
 
 		}
-		
 		return root;
 	}
 	

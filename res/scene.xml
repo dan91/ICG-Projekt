@@ -3,10 +3,10 @@
 	<task name="Haushalt">
 		<task name="Küche">
 			<task name="Spülmaschine ausräumen" />
-			<task />
 		</task>
 		<task name="Wohnzimmer">
 			<task name="Saugen" />
+			<task name="Tisch abräumen"/>
 		</task>
 	</task>
 	<task name="Schule">
@@ -17,8 +17,7 @@
 			<task name="Spanisch" />
 			<task name="Latein" />
 		</task>
-		<task name="Schulaufgaben"/>
 	</task>
-	<task />
-	<task />
+	<task name="Arbeit"/>
+	<task name="Uni" />
 </scene>

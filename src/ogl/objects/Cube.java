@@ -25,11 +25,9 @@ public class Cube extends Node {
 	Shader defaultshader;
 	Texture tex;
 
-	
 	private FloatBuffer positionData;
 	private FloatBuffer colorData;
 	private FloatBuffer textureData;
-	
 	
 	public Cube(Shader defaultshader, String name) {
 		super(name);
@@ -103,7 +101,6 @@ public class Cube extends Node {
 
 	// Make construction of vectors easy on the eyes.
 	private Vector vec(float x, float y, float z) {
-		
 		return vecmath.vector(x, y, z);
 	}
 

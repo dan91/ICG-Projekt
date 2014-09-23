@@ -1,9 +1,6 @@
-package ogl.shader;
+package ogl.vecmath;
 
 import java.nio.FloatBuffer;
-
-import ogl.vecmath.Color;
-import ogl.vecmath.Vector;
 
 import org.lwjgl.BufferUtils;
 

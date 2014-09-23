@@ -83,14 +83,13 @@ public class Camera extends Node{
 
 	public void setEyeY(float eyeY) {
 		int middleY = 768/2;
-		this.eyeY = (middleY-(eyeY))/50;
+		this.eyeY = (middleY-(eyeY))/20;
 	}
 
 	
 	public void setEyeX(float eyeX) {
 		int middleX = 1324/2;
-		this.eyeX = (middleX-(eyeX))/50;
-		System.out.println(eyeX);
+		this.eyeX = (middleX-(eyeX))/20;
 	}
 
 	public void setEyeZ(float eyeZ) {

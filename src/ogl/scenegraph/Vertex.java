@@ -2,8 +2,8 @@ package ogl.scenegraph;
 
 import javax.vecmath.Vector2f;
 
-import ogl.shader.ColorAlpha;
 import ogl.vecmath.Color;
+import ogl.vecmath.ColorAlpha;
 import ogl.vecmath.TexCoord;
 import ogl.vecmath.Vector;
 

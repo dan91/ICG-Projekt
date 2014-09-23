@@ -15,13 +15,12 @@ import org.lwjgl.opengl.GL11;
 import ogl.app.Texture;
 import ogl.scenegraph.Node;
 import ogl.scenegraph.Vertex;
-import ogl.shader.ColorAlpha;
 import ogl.shader.Shader;
 import ogl.vecmath.Color;
+import ogl.vecmath.ColorAlpha;
 import ogl.vecmath.Matrix;
 import ogl.vecmath.TexCoord;
 import ogl.vecmath.Vector;
-import ogl.shader.ColorAlpha;
 
 public class Plane extends Node {
 

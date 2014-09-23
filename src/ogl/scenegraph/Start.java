@@ -94,7 +94,6 @@ public class Start implements App {
 		Node scene = null;
 		try {
 			scene = reader.getScene(new File("res/scene.xml"), defaultshader);
-			System.out.println(scene.toString());
 
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
@@ -232,10 +231,8 @@ public class Start implements App {
 
 		// Zoom in
 		if (zoomInProgress == true && camLastPosi-6 < cam.getEyeZ()) {
-			System.out.println(cam.getTransformation().getPosition().z());
 			cam.moveIn(elapsed);
 		} else if (zoomInProgress == true) {
-			System.out.println(cam.getEyeZ());
 			zoomInProgress = false;
 			activePlane = activeObject.getNode(0);
 			activeObject = activePlane.getNode(0).getNode(0);
@@ -247,7 +244,6 @@ public class Start implements App {
 		if (zoomOutProgress == true && camLastPosi+6 > cam.getEyeZ()) {
 			cam.moveOut(elapsed);
 		} else if (zoomOutProgress == true) {
-			System.out.println(cam.getEyeZ());
 			zoomOutProgress = false;
 			activeObject = activePlane.getParent();
 			activePlane = activeObject.getParent().getParent();
